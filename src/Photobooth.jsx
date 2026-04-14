@@ -61,18 +61,85 @@ function addVignette(ctx, w, h, strength) {
   ctx.fillRect(0, 0, w, h);
 }
 
+// Detect ctx.filter support (Safari doesn't have it)
+const _testCanvas = typeof document !== 'undefined' ? document.createElement('canvas').getContext('2d') : null;
+const SUPPORTS_CTX_FILTER = _testCanvas && 'filter' in _testCanvas && (() => {
+  _testCanvas.filter = 'blur(1px)';
+  return _testCanvas.filter === 'blur(1px)';
+})();
+
+// Pixel-level filter implementations for Safari fallback
+function applyPixelFilters(ctx, w, h, cssFilter) {
+  if (!cssFilter || cssFilter === 'none') return;
+  const img = ctx.getImageData(0, 0, w, h);
+  const d = img.data;
+
+  // Parse CSS filter string into operations
+  const ops = [];
+  const re = /(blur|brightness|contrast|saturate|sepia|grayscale|hue-rotate)\(([^)]+)\)/g;
+  let m;
+  while ((m = re.exec(cssFilter)) !== null) {
+    const name = m[1];
+    const raw = m[2];
+    let val = parseFloat(raw);
+    if (raw.includes('deg')) val = parseFloat(raw);
+    ops.push({ name, val });
+  }
+
+  for (let i = 0; i < d.length; i += 4) {
+    let r = d[i], g = d[i+1], b = d[i+2];
+
+    for (const op of ops) {
+      if (op.name === 'brightness') {
+        r *= op.val; g *= op.val; b *= op.val;
+      } else if (op.name === 'contrast') {
+        r = ((r / 255 - 0.5) * op.val + 0.5) * 255;
+        g = ((g / 255 - 0.5) * op.val + 0.5) * 255;
+        b = ((b / 255 - 0.5) * op.val + 0.5) * 255;
+      } else if (op.name === 'saturate') {
+        const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        r = gray + (r - gray) * op.val;
+        g = gray + (g - gray) * op.val;
+        b = gray + (b - gray) * op.val;
+      } else if (op.name === 'grayscale') {
+        const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        r = r + (gray - r) * op.val;
+        g = g + (gray - g) * op.val;
+        b = b + (gray - b) * op.val;
+      } else if (op.name === 'sepia') {
+        const sr = 0.393 * r + 0.769 * g + 0.189 * b;
+        const sg = 0.349 * r + 0.686 * g + 0.168 * b;
+        const sb = 0.272 * r + 0.534 * g + 0.131 * b;
+        r = r + (sr - r) * op.val;
+        g = g + (sg - g) * op.val;
+        b = b + (sb - b) * op.val;
+      } else if (op.name === 'hue-rotate') {
+        const angle = op.val * Math.PI / 180;
+        const cos = Math.cos(angle), sin = Math.sin(angle);
+        const nr = r * (0.213 + cos * 0.787 - sin * 0.213) + g * (0.715 - cos * 0.715 - sin * 0.715) + b * (0.072 - cos * 0.072 + sin * 0.928);
+        const ng = r * (0.213 - cos * 0.213 + sin * 0.143) + g * (0.715 + cos * 0.285 + sin * 0.140) + b * (0.072 - cos * 0.072 - sin * 0.283);
+        const nb = r * (0.213 - cos * 0.213 - sin * 0.787) + g * (0.715 - cos * 0.715 + sin * 0.715) + b * (0.072 + cos * 0.928 + sin * 0.072);
+        r = nr; g = ng; b = nb;
+      }
+      // blur is skipped in pixel mode — the CSS preview already shows it
+    }
+
+    d[i]   = Math.min(255, Math.max(0, r));
+    d[i+1] = Math.min(255, Math.max(0, g));
+    d[i+2] = Math.min(255, Math.max(0, b));
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
 const FILTERS = [
-  { name: 'Normal', css: 'blur(1.5px)' },
   { name: 'Pure White', css: 'brightness(1.1) contrast(0.9) saturate(1.1) blur(1.5px)' },
   { name: 'Peach Cream', css: 'brightness(1.05) sepia(0.2) saturate(1.3) contrast(0.95) blur(1.5px)' },
-  { name: 'Cool Fair', css: 'hue-rotate(10deg) brightness(1.1) saturate(0.9) contrast(1.05) blur(1.5px)' },
   { name: 'Tokyo Film', css: 'hue-rotate(-5deg) saturate(1.2) brightness(1.05) contrast(0.9) blur(1.5px)' },
   { name: 'High-Key Gloss', css: 'brightness(1.2) contrast(1.1) saturate(1.2) blur(1.5px)' },
   { name: 'Minimalist Matte', css: 'saturate(0.7) contrast(0.85) brightness(1.15) blur(1.5px)' },
   { name: 'Sakura Glow', css: 'hue-rotate(-15deg) saturate(1.4) brightness(1.1) contrast(0.9) blur(1.5px)' },
   { name: 'Vintage Purikura', css: 'contrast(1.2) saturate(1.5) brightness(1.1) blur(1.5px)' },
   { name: 'Morning Light', css: 'blur(1.5px) brightness(1.1) contrast(0.9) saturate(1.1)' },
-  { name: 'Classic B&W', css: 'grayscale(1) contrast(1.3) brightness(1.1) blur(1.5px)' },
   // 90s analog photobooth filters
   {
     name: '90s Booth',
@@ -105,16 +172,6 @@ const FILTERS = [
     post: (ctx, w, h) => { liftBlacks(ctx, w, h, 40); addGrain(ctx, w, h, 55); },
   },
   {
-    name: 'Sunbleached',
-    css: 'sepia(0.2) contrast(0.75) saturate(1.3) brightness(1.2) blur(2px)',
-    post: (ctx, w, h) => { liftBlacks(ctx, w, h, 60); warmTint(ctx, w, h, 255, 250, 200, 0.1); addGrain(ctx, w, h, 25); },
-  },
-  {
-    name: 'Drugstore',
-    css: 'sepia(0.1) contrast(0.9) saturate(1.2) brightness(1.0) hue-rotate(-5deg) blur(1.5px)',
-    post: (ctx, w, h) => { liftBlacks(ctx, w, h, 25); warmTint(ctx, w, h, 230, 200, 190, 0.08); addGrain(ctx, w, h, 35); },
-  },
-  {
     name: 'Expired Film',
     css: 'sepia(0.1) contrast(0.7) saturate(0.5) brightness(1.15) hue-rotate(15deg) blur(2.5px)',
     post: (ctx, w, h) => { liftBlacks(ctx, w, h, 65); warmTint(ctx, w, h, 180, 220, 200, 0.15); addGrain(ctx, w, h, 60); },
@@ -129,11 +186,6 @@ const FILTERS = [
     name: '70s Harsh',
     css: 'grayscale(1) contrast(1.8) brightness(1.05) blur(1.2px)',
     post: (ctx, w, h) => { applyLevels(ctx, w, h, 45, 210); addGrain(ctx, w, h, 75); addVignette(ctx, w, h, 0.6); },
-  },
-  {
-    name: '70s Soft',
-    css: 'grayscale(1) contrast(1.5) brightness(1.15) blur(2px)',
-    post: (ctx, w, h) => { applyLevels(ctx, w, h, 20, 230); liftBlacks(ctx, w, h, 15); addGrain(ctx, w, h, 50); addVignette(ctx, w, h, 0.4); },
   },
   {
     name: '70s Sepia',
@@ -158,7 +210,7 @@ export default function Photobooth() {
   const startCamera = useCallback(async () => {
     try {
       const s = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480, facingMode: 'user' },
+        video: { facingMode: 'user' },
         audio: false,
       });
       setStream(s);
@@ -187,27 +239,34 @@ export default function Photobooth() {
   const takePhoto = useCallback(() => {
     if (!stream) return;
 
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    // Wait for video to have actual dimensions
+    if (!video.videoWidth || !video.videoHeight) return;
+
     // Flash effect
     setFlash(true);
     setTimeout(() => setFlash(false), 200);
 
-    // Capture
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
-
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
 
     // Mirror the image (selfie mode)
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
-    ctx.filter = FILTERS[filter].css;
+    if (SUPPORTS_CTX_FILTER) {
+      ctx.filter = FILTERS[filter].css;
+    }
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-
     ctx.filter = 'none';
+
+    // Safari fallback: apply filters via pixel manipulation
+    if (!SUPPORTS_CTX_FILTER) {
+      applyPixelFilters(ctx, canvas.width, canvas.height, FILTERS[filter].css);
+    }
 
     // Run post-processing (grain, lifted blacks, tint) if filter has it
     if (FILTERS[filter].post) {
