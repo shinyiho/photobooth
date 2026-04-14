@@ -448,6 +448,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
 
   const dragSelected = useCallback((e) => {
     if (!isDraggingSticker.current || selectedId === null) return;
+    e.preventDefault();
     if (!dragSnapshotSaved.current) {
       saveSnapshot();
       dragSnapshotSaved.current = true;
@@ -573,7 +574,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
 
         {/* Canvas area */}
         <div
-          className="editor-canvas-wrap"
+          className={`editor-canvas-wrap ${mode === 'draw' ? 'draw-active' : ''}`}
           ref={containerRef}
           onMouseDown={mode === 'draw' ? startDraw : ((mode === 'sticker' || mode === 'stamp') ? handleCanvasClick : undefined)}
           onMouseMove={mode === 'draw' ? draw : dragSelected}
