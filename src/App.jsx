@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Photobooth from './Photobooth';
 import useChiptune from './useChiptune';
 import './App.css';
@@ -31,27 +31,45 @@ const DECORATIONS = [
 
 export default function App() {
   const { playing, songs, play, stop } = useChiptune();
+  const [radioOpen, setRadioOpen] = useState(false);
   const stars = useMemo(() => generateStars(80), []);
 
   return (
     <div className="app">
-      {/* Music selector */}
-      <div className="music-panel">
-        {songs.map((s, i) => (
-          <button
-            key={i}
-            className={`music-toggle ${playing === i ? 'playing' : ''}`}
-            onClick={() => playing === i ? stop() : play(i)}
-          >
-            <span className="note">{playing === i ? '\u266b' : '\u266a'}</span>
-            {s.name}
-          </button>
-        ))}
-        {playing !== null && (
-          <button className="music-toggle music-off" onClick={stop}>
-            OFF
-          </button>
-        )}
+      {/* Radio music player */}
+      <div className="radio-panel">
+        <img src="/radio.svg" alt="" className="radio-img" draggable={false} onClick={() => setRadioOpen(prev => !prev)} />
+        {radioOpen && <div className="radio-controls">
+          <div className={`radio-display ${playing !== null ? 'on' : ''}`}>
+            {playing !== null ? songs[playing].name : 'OFF'}
+          </div>
+          <div className="radio-buttons">
+            <button
+              className="radio-btn"
+              onClick={() => {
+                const prev = playing === null ? songs.length - 1 : (playing - 1 + songs.length) % songs.length;
+                play(prev);
+              }}
+            >
+              &#9664;
+            </button>
+            <button
+              className="radio-btn radio-btn-play"
+              onClick={() => playing !== null ? stop() : play(0)}
+            >
+              {playing !== null ? '\u25A0' : '\u25B6'}
+            </button>
+            <button
+              className="radio-btn"
+              onClick={() => {
+                const next = playing === null ? 0 : (playing + 1) % songs.length;
+                play(next);
+              }}
+            >
+              &#9654;
+            </button>
+          </div>
+        </div>}
       </div>
       {/* Starfield background */}
       <div className="starfield">
