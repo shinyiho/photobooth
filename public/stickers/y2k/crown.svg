@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" width="160" height="120">
+  <!-- Crown body -->
+  <path d="M20,90 L15,35 L45,55 L80,15 L115,55 L145,35 L140,90 Z" fill="#ffd700" stroke="#222" stroke-width="4.5" stroke-linejoin="round"/>
+  <!-- Crown base band -->
+  <rect x="18" y="82" width="124" height="18" rx="4" fill="#ffc800" stroke="#222" stroke-width="4"/>
+  <!-- Jewels on base -->
+  <circle cx="50" cy="91" r="6" fill="#ff1493" stroke="#222" stroke-width="2.5"/>
+  <circle cx="80" cy="91" r="7" fill="#00e5ff" stroke="#222" stroke-width="2.5"/>
+  <circle cx="110" cy="91" r="6" fill="#ff1493" stroke="#222" stroke-width="2.5"/>
+  <!-- Jewel shines -->
+  <circle cx="48" cy="89" r="2" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="78" cy="89" r="2.5" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="108" cy="89" r="2" fill="rgba(255,255,255,0.5)"/>
+  <!-- Crown tip balls -->
+  <circle cx="15" cy="33" r="6" fill="#ffd700" stroke="#222" stroke-width="3"/>
+  <circle cx="80" cy="13" r="7" fill="#ffd700" stroke="#222" stroke-width="3"/>
+  <circle cx="145" cy="33" r="6" fill="#ffd700" stroke="#222" stroke-width="3"/>
+  <!-- Gold highlight -->
+  <path d="M35,50 Q55,65 75,40" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="4" stroke-linecap="round"/>
+</svg>

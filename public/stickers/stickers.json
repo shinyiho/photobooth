@@ -1,0 +1,64 @@
+{
+  "categories": [
+    {
+      "id": "classic",
+      "label": "CLASSIC",
+      "type": "emoji",
+      "items": ["\u2764\ufe0f", "\u2b50", "\ud83c\udf38", "\ud83c\udf1f", "\ud83e\udd8b", "\ud83c\udf08", "\ud83d\udc8e", "\ud83c\udf80", "\ud83c\udf3b", "\ud83c\udf1e", "\u2728", "\ud83d\udc96", "\ud83c\udf3a", "\ud83e\udde1", "\ud83d\udc9c", "\ud83c\udf52", "\ud83c\udf53", "\ud83c\udf40"]
+    },
+    {
+      "id": "hearts",
+      "label": "HEARTS",
+      "type": "emoji",
+      "items": ["\u2764\ufe0f", "\ud83e\udd0d", "\ud83d\udc9b", "\ud83d\udc9a", "\ud83d\udc99", "\ud83d\udc9c", "\ud83e\udde1", "\ud83d\udc96", "\ud83d\udc97", "\ud83d\udc93", "\ud83d\udc9e", "\ud83d\udc95"]
+    },
+    {
+      "id": "animals",
+      "label": "ANIMALS",
+      "type": "emoji",
+      "items": ["\ud83d\udc31", "\ud83d\udc36", "\ud83d\udc30", "\ud83e\udd8a", "\ud83d\udc3b", "\ud83d\udc3c", "\ud83e\udd81", "\ud83e\udd84", "\ud83d\udc2c", "\ud83e\udd8b", "\ud83d\udc26", "\ud83d\udc27"]
+    },
+    {
+      "id": "food",
+      "label": "FOOD",
+      "type": "emoji",
+      "items": ["\ud83c\udf54", "\ud83c\udf55", "\ud83c\udf66", "\ud83c\udf69", "\ud83c\udf70", "\ud83c\udf53", "\ud83c\udf52", "\ud83c\udf49", "\ud83c\udf6d", "\ud83e\uddc1", "\ud83c\udf6a", "\ud83e\udd64"]
+    },
+    {
+      "id": "nature",
+      "label": "NATURE",
+      "type": "emoji",
+      "items": ["\ud83c\udf38", "\ud83c\udf39", "\ud83c\udf3b", "\ud83c\udf3a", "\ud83c\udf37", "\ud83c\udf3f", "\ud83c\udf35", "\ud83c\udf34", "\ud83c\udf1e", "\ud83c\udf1d", "\u2b50", "\u2728"]
+    },
+    {
+      "id": "party",
+      "label": "PARTY",
+      "type": "emoji",
+      "items": ["\ud83c\udf89", "\ud83c\udf8a", "\ud83c\udf88", "\ud83c\udf86", "\ud83c\udf87", "\ud83e\udd73", "\ud83c\udf81", "\ud83c\udf80", "\ud83c\udf96\ufe0f", "\ud83c\udfc6", "\ud83d\udc51", "\ud83d\udc8d"]
+    },
+    {
+      "id": "y2k",
+      "label": "Y2K",
+      "type": "image",
+      "items": ["y2k/fairy.svg", "y2k/ai-love.svg", "y2k/hairclips.svg", "y2k/bow.svg", "y2k/star.svg", "y2k/wingheart.svg", "y2k/crown.svg"]
+    },
+    {
+      "id": "accessories",
+      "label": "ACCS",
+      "type": "image",
+      "items": [
+        "accessories/boater-hat.svg",
+        "accessories/fedora-light.svg",
+        "accessories/fedora-brown.svg",
+        "accessories/catears-grey.svg",
+        "accessories/catears-orange.svg",
+        "accessories/catears-pink.svg",
+        "accessories/frog-headband.svg",
+        "accessories/bear-headband.svg",
+        "accessories/bow-pink-polkadot.svg",
+        "accessories/bow-purple-plaid.svg",
+        "accessories/bow-blue-plaid.svg"
+      ]
+    }
+  ]
+}

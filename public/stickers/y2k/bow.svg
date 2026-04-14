@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="200" height="160">
+  <!-- Marker texture filter -->
+  <defs>
+    <filter id="marker">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <g filter="url(#marker)">
+    <!-- Left ribbon tail -->
+    <path d="M55,95 Q30,110 25,140 Q28,142 35,138 Q45,125 60,108 Z" fill="#ffd700" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Right ribbon tail -->
+    <path d="M145,95 Q170,110 175,140 Q172,142 165,138 Q155,125 140,108 Z" fill="#ffd700" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Left bow lobe -->
+    <path d="M100,70 Q60,20 20,40 Q5,50 15,65 Q25,80 55,85 Q75,88 100,70 Z" fill="#ffe135" stroke="#222" stroke-width="4.5" stroke-linejoin="round"/>
+    <!-- Left lobe fold line -->
+    <path d="M85,62 Q60,40 35,55" fill="none" stroke="#f0c800" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+    <!-- Left lobe shine -->
+    <ellipse cx="50" cy="48" rx="14" ry="8" fill="rgba(255,255,255,0.35)" transform="rotate(-20, 50, 48)"/>
+    <!-- Right bow lobe -->
+    <path d="M100,70 Q140,20 180,40 Q195,50 185,65 Q175,80 145,85 Q125,88 100,70 Z" fill="#ffe135" stroke="#222" stroke-width="4.5" stroke-linejoin="round"/>
+    <!-- Right lobe fold line -->
+    <path d="M115,62 Q140,40 165,55" fill="none" stroke="#f0c800" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+    <!-- Right lobe shine -->
+    <ellipse cx="150" cy="48" rx="14" ry="8" fill="rgba(255,255,255,0.35)" transform="rotate(20, 150, 48)"/>
+    <!-- Center knot -->
+    <ellipse cx="100" cy="78" rx="18" ry="16" fill="#ffc800" stroke="#222" stroke-width="4.5"/>
+    <!-- Knot fold -->
+    <path d="M92,72 Q100,82 108,72" fill="none" stroke="#e6b000" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Knot shine -->
+    <ellipse cx="96" cy="73" rx="5" ry="3" fill="rgba(255,255,255,0.4)"/>
+  </g>
+  <!-- Sparkles around the bow -->
+  <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+    <!-- Top left sparkle -->
+    <g transform="translate(30, 22)">
+      <line x1="0" y1="-5" x2="0" y2="5"/>
+      <line x1="-5" y1="0" x2="5" y2="0"/>
+    </g>
+    <!-- Top right sparkle -->
+    <g transform="translate(172, 28)">
+      <line x1="0" y1="-4" x2="0" y2="4"/>
+      <line x1="-4" y1="0" x2="4" y2="0"/>
+      <line x1="-3" y1="-3" x2="3" y2="3"/>
+      <line x1="3" y1="-3" x2="-3" y2="3"/>
+    </g>
+    <!-- Bottom sparkle -->
+    <g transform="translate(100, 120)">
+      <line x1="0" y1="-3" x2="0" y2="3"/>
+      <line x1="-3" y1="0" x2="3" y2="0"/>
+    </g>
+  </g>
+</svg>

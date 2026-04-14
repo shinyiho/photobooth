@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" width="200" height="110">
+  <defs>
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <g filter="url(#sketch)">
+    <!-- Headband -->
+    <path d="M20,95 Q100,65 180,95" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+    <!-- Left ear outer -->
+    <path d="M45,85 L30,20 L75,60 Z" fill="#999" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Left ear inner -->
+    <path d="M48,75 L38,32 L68,58 Z" fill="#d4a0b0" stroke="none"/>
+    <!-- Right ear outer -->
+    <path d="M155,85 L170,20 L125,60 Z" fill="#999" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Right ear inner -->
+    <path d="M152,75 L162,32 L132,58 Z" fill="#d4a0b0" stroke="none"/>
+    <!-- Marker texture -->
+    <path d="M40,55 L35,35" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M160,55 L165,35" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>

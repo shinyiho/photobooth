@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 130" width="220" height="130">
+  <!-- Left wing -->
+  <g transform="translate(15, 30)">
+    <path d="M75,35 Q60,10 40,15 Q15,20 10,40 Q5,55 20,50 Q10,35 25,30 Q35,27 45,35 Q35,25 50,22 Q60,20 65,30 Z" fill="#fff" stroke="#222" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M60,32 Q50,22 38,28" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <!-- Right wing (mirrored) -->
+  <g transform="translate(125, 30) scale(-1,1) translate(-80,0)">
+    <path d="M75,35 Q60,10 40,15 Q15,20 10,40 Q5,55 20,50 Q10,35 25,30 Q35,27 45,35 Q35,25 50,22 Q60,20 65,30 Z" fill="#fff" stroke="#222" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M60,32 Q50,22 38,28" fill="none" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <!-- Heart -->
+  <path d="M110,45 Q110,25 90,25 Q70,25 70,50 Q70,70 110,95 Q150,70 150,50 Q150,25 130,25 Q110,25 110,45 Z" fill="#ff1493" stroke="#222" stroke-width="4.5" stroke-linejoin="round"/>
+  <!-- Heart highlight -->
+  <ellipse cx="92" cy="42" rx="10" ry="7" fill="rgba(255,255,255,0.4)" transform="rotate(-25,92,42)"/>
+  <circle cx="118" cy="52" r="4" fill="rgba(255,255,255,0.25)"/>
+  <!-- Sparkles -->
+  <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+    <g transform="translate(60, 20)">
+      <line x1="0" y1="-4" x2="0" y2="4"/>
+      <line x1="-4" y1="0" x2="4" y2="0"/>
+    </g>
+    <g transform="translate(165, 25)">
+      <line x1="0" y1="-5" x2="0" y2="5"/>
+      <line x1="-5" y1="0" x2="5" y2="0"/>
+      <line x1="-3" y1="-3" x2="3" y2="3"/>
+      <line x1="3" y1="-3" x2="-3" y2="3"/>
+    </g>
+  </g>
+</svg>

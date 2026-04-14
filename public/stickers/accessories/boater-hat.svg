@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="200" height="140">
+  <defs>
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="1" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- Marker texture -->
+    <pattern id="markerTan" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(25)">
+      <rect width="8" height="8" fill="#deb887"/>
+      <line x1="0" y1="0" x2="8" y2="0" stroke="#d4a76a" stroke-width="1.5" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <g filter="url(#sketch)">
+    <!-- Brim -->
+    <ellipse cx="100" cy="105" rx="90" ry="22" fill="url(#markerTan)" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Crown -->
+    <path d="M45,105 L48,55 Q50,35 100,32 Q150,35 152,55 L155,105" fill="url(#markerTan)" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Crown top -->
+    <ellipse cx="100" cy="38" rx="52" ry="12" fill="#deb887" stroke="#333" stroke-width="3.5"/>
+    <!-- Ribbon band -->
+    <rect x="46" y="80" width="108" height="18" rx="2" fill="#ff8da1" stroke="#333" stroke-width="3"/>
+    <!-- Ribbon bow -->
+    <ellipse cx="115" cy="89" rx="12" ry="7" fill="#ff6b8a" stroke="#333" stroke-width="2.5"/>
+    <ellipse cx="138" cy="89" rx="12" ry="7" fill="#ff6b8a" stroke="#333" stroke-width="2.5"/>
+    <circle cx="126" cy="89" r="5" fill="#e0556e" stroke="#333" stroke-width="2.5"/>
+    <!-- Marker texture strokes on crown -->
+    <path d="M65,60 Q80,50 95,55" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M70,75 Q90,68 110,72" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>
