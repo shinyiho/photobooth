@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(export NVM_DIR=\"$HOME/.nvm\")",
-      "Bash(export PATH=\"$NVM_DIR/versions/node/v20.20.2/bin:$PATH\")",
-      "Bash(npx vite:*)"
-    ]
-  }
-}
