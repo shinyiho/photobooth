@@ -27,7 +27,7 @@ body {
   font-family: 'Press Start 2P', monospace;
   background: var(--bg-dark);
   color: var(--text);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* Scrollbar - hidden globally */
