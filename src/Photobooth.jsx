@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import StripEditor from './StripEditor';
 import PhotoBoard from './PhotoBoard';
+import { loadBoardItems, makePendingItem, persistItem } from './boardService';
 
 // Post-processing: lift blacks, add grain, tint
 function liftBlacks(ctx, w, h, amount) {
@@ -205,7 +206,8 @@ export default function Photobooth() {
   const [showEditor, setShowEditor] = useState(false);
   const [pendingPhoto, setPendingPhoto] = useState(null);
   const [showBoard, setShowBoard] = useState(false);
-  const [boardStrips, setBoardStrips] = useState([]);
+  const [boardItems, setBoardItems] = useState([]);
+  const [myStripId, setMyStripId] = useState(null);
 
   const startCamera = useCallback(async () => {
     try {
@@ -225,6 +227,10 @@ export default function Photobooth() {
 
   useEffect(() => {
     startCamera();
+    loadBoardItems().then(items => {
+      setBoardItems(items);
+      if (items.length > 0) setShowBoard(true);
+    });
     return () => {
       if (stream) stream.getTracks().forEach(t => t.stop());
     };
@@ -249,17 +255,29 @@ export default function Photobooth() {
     setFlash(true);
     setTimeout(() => setFlash(false), 200);
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Crop source to 4:3 to match viewfinder (object-fit: cover)
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    const TARGET_RATIO = 4 / 3;
+    let sx = 0, sy = 0, sw = vw, sh = vh;
+    if (vw / vh > TARGET_RATIO) {
+      sw = vh * TARGET_RATIO;
+      sx = (vw - sw) / 2;
+    } else if (vw / vh < TARGET_RATIO) {
+      sh = vw / TARGET_RATIO;
+      sy = (vh - sh) / 2;
+    }
+    canvas.width = Math.round(sw);
+    canvas.height = Math.round(sh);
     const ctx = canvas.getContext('2d');
 
-    // Mirror the image (selfie mode)
+    // Mirror the image (selfie mode), draw the 4:3 crop
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
     if (SUPPORTS_CTX_FILTER) {
       ctx.filter = FILTERS[filter].css;
     }
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.filter = 'none';
 
@@ -373,21 +391,29 @@ export default function Photobooth() {
           onDone={(stripImage) => {
             setShowEditor(false);
             setPhotos([]);
-            setBoardStrips(prev => [...prev, stripImage]);
+            const pending = makePendingItem(stripImage);
+            setMyStripId(pending.id);
+            setBoardItems(prev => [...prev, pending]);
             setShowBoard(true);
+            persistItem(pending)
+              .then(saved => {
+                setBoardItems(prev => prev.map(i => i.localId === pending.localId ? saved : i));
+                setMyStripId(saved.id);
+              })
+              .catch(e => console.error('[board] ❌ Failed to save strip to Firestore:', e));
           }}
         />
       )}
 
       {showBoard && (
         <PhotoBoard
-          strips={boardStrips}
-          onNewRound={() => {
-            setShowBoard(false);
-          }}
-          onClose={() => {
-            setShowBoard(false);
-          }}
+          items={boardItems}
+          myStripId={myStripId}
+          onUpdateItem={(id, changes) =>
+            setBoardItems(prev => prev.map(i => i.id === id ? { ...i, ...changes } : i))
+          }
+          onDeleteItem={(id) => setBoardItems(prev => prev.filter(i => i.id !== id))}
+          onNewRound={() => { setShowBoard(false); setMyStripId(null); }}
         />
       )}
 

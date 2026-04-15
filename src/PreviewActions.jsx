@@ -16,7 +16,7 @@ export default function PreviewActions({ onUndo, onRedo, canUndo, canRedo, onDow
         REDO
       </button>
       <button className="btn btn-download" onClick={onDownload}>
-        DOWNLOAD
+        PRINT
       </button>
       <button className="btn btn-filter" onClick={onClose}>
         CLOSE

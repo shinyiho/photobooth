@@ -1,63 +1,175 @@
 {
   "categories": [
     {
-      "id": "classic",
-      "label": "CLASSIC",
-      "type": "emoji",
-      "items": ["\u2764\ufe0f", "\u2b50", "\ud83c\udf38", "\ud83c\udf1f", "\ud83e\udd8b", "\ud83c\udf08", "\ud83d\udc8e", "\ud83c\udf80", "\ud83c\udf3b", "\ud83c\udf1e", "\u2728", "\ud83d\udc96", "\ud83c\udf3a", "\ud83e\udde1", "\ud83d\udc9c", "\ud83c\udf52", "\ud83c\udf53", "\ud83c\udf40"]
-    },
-    {
-      "id": "hearts",
-      "label": "HEARTS",
-      "type": "emoji",
-      "items": ["\u2764\ufe0f", "\ud83e\udd0d", "\ud83d\udc9b", "\ud83d\udc9a", "\ud83d\udc99", "\ud83d\udc9c", "\ud83e\udde1", "\ud83d\udc96", "\ud83d\udc97", "\ud83d\udc93", "\ud83d\udc9e", "\ud83d\udc95"]
-    },
-    {
-      "id": "animals",
-      "label": "ANIMALS",
-      "type": "emoji",
-      "items": ["\ud83d\udc31", "\ud83d\udc36", "\ud83d\udc30", "\ud83e\udd8a", "\ud83d\udc3b", "\ud83d\udc3c", "\ud83e\udd81", "\ud83e\udd84", "\ud83d\udc2c", "\ud83e\udd8b", "\ud83d\udc26", "\ud83d\udc27"]
-    },
-    {
-      "id": "food",
-      "label": "FOOD",
-      "type": "emoji",
-      "items": ["\ud83c\udf54", "\ud83c\udf55", "\ud83c\udf66", "\ud83c\udf69", "\ud83c\udf70", "\ud83c\udf53", "\ud83c\udf52", "\ud83c\udf49", "\ud83c\udf6d", "\ud83e\uddc1", "\ud83c\udf6a", "\ud83e\udd64"]
-    },
-    {
-      "id": "nature",
-      "label": "NATURE",
-      "type": "emoji",
-      "items": ["\ud83c\udf38", "\ud83c\udf39", "\ud83c\udf3b", "\ud83c\udf3a", "\ud83c\udf37", "\ud83c\udf3f", "\ud83c\udf35", "\ud83c\udf34", "\ud83c\udf1e", "\ud83c\udf1d", "\u2b50", "\u2728"]
-    },
-    {
-      "id": "party",
-      "label": "PARTY",
-      "type": "emoji",
-      "items": ["\ud83c\udf89", "\ud83c\udf8a", "\ud83c\udf88", "\ud83c\udf86", "\ud83c\udf87", "\ud83e\udd73", "\ud83c\udf81", "\ud83c\udf80", "\ud83c\udf96\ufe0f", "\ud83c\udfc6", "\ud83d\udc51", "\ud83d\udc8d"]
-    },
-    {
-      "id": "y2k",
-      "label": "Y2K",
-      "type": "image",
-      "items": ["y2k/fairy.svg", "y2k/ai-love.svg", "y2k/hairclips.svg", "y2k/bow.svg", "y2k/star.svg", "y2k/wingheart.svg", "y2k/crown.svg"]
-    },
-    {
-      "id": "accessories",
-      "label": "ACCS",
+      "id": "acc",
+      "label": "ACC",
       "type": "image",
       "items": [
-        "accessories/boater-hat.svg",
-        "accessories/fedora-light.svg",
-        "accessories/fedora-brown.svg",
-        "accessories/catears-grey.svg",
-        "accessories/catears-orange.svg",
-        "accessories/catears-pink.svg",
-        "accessories/frog-headband.svg",
-        "accessories/bear-headband.svg",
-        "accessories/bow-pink-polkadot.svg",
-        "accessories/bow-purple-plaid.svg",
-        "accessories/bow-blue-plaid.svg"
+        "acc/09b21354e14e4ca17065b9f076b6571b Background Removed.png",
+        "acc/14e9d8fba1e393351b8b1e288233b62b Background Removed.png",
+        "acc/19e35c3846b9a9fc8f40b75ca8d8e5dc Background Removed.png",
+        "acc/49a76337e50823cfcbfc778457c929f6 Background Removed.png",
+        "acc/4d13a77fb621ce038157d0177ab692a5 Background Removed.png",
+        "acc/57af9502ab7ccd52cf795219da34bfe9 Background Removed.png",
+        "acc/6cc13f4c4380008be0a994fce33b2b8d Background Removed.png",
+        "acc/701ccda67f54a5997d9d4e7075d06d5a Background Removed.png",
+        "acc/a91e32f5d0a540ba201aaab6bec67453 Background Removed.png",
+        "acc/ae46c41a28bb944f91b4ae4049895583 Background Removed.png",
+        "acc/e7bf840e80cdaede9c26155b6c324219 Background Removed.png"
+      ]
+    },
+    {
+      "id": "alphabet",
+      "label": "ALPHABET",
+      "type": "image",
+      "items": [
+        "alphabet/1a.png",
+        "alphabet/1b.png",
+        "alphabet/1c.png",
+        "alphabet/1d.png",
+        "alphabet/1e.png",
+        "alphabet/1f.png",
+        "alphabet/1g.png",
+        "alphabet/1h.png",
+        "alphabet/1i.png",
+        "alphabet/1j.png",
+        "alphabet/1k.png",
+        "alphabet/1l.png",
+        "alphabet/1m.png",
+        "alphabet/1n.png",
+        "alphabet/1o.png",
+        "alphabet/1p.png",
+        "alphabet/1q.png",
+        "alphabet/1r.png",
+        "alphabet/1s.png",
+        "alphabet/1t.png",
+        "alphabet/1u.png",
+        "alphabet/1v.png",
+        "alphabet/1w.png",
+        "alphabet/1x.png",
+        "alphabet/1y.png",
+        "alphabet/1z.png",
+        "alphabet/2a.png",
+        "alphabet/2b.png",
+        "alphabet/2c.png",
+        "alphabet/2d.png",
+        "alphabet/2e.png",
+        "alphabet/2f.png",
+        "alphabet/2g.png",
+        "alphabet/2h.png",
+        "alphabet/2i.png",
+        "alphabet/2j.png",
+        "alphabet/2k.png",
+        "alphabet/2l.png",
+        "alphabet/2m.png",
+        "alphabet/2n.png",
+        "alphabet/2o.png",
+        "alphabet/2p.png",
+        "alphabet/2q.png",
+        "alphabet/2r.png",
+        "alphabet/2s.png",
+        "alphabet/2t.png",
+        "alphabet/2u.png",
+        "alphabet/2v.png",
+        "alphabet/2w.png",
+        "alphabet/2x.png",
+        "alphabet/2y.png",
+        "alphabet/2z.png"
+      ]
+    },
+    {
+      "id": "bear",
+      "label": "BEAR",
+      "type": "image",
+      "items": [
+        "bear/Screenshot 2026-04-15 at 14.09 Background Removed.57.png",
+        "bear/Screenshot 2026-04-15 at 14.10 Background Removed.38.png",
+        "bear/Screenshot 2026-04-15 at 14.11 Background Removed.00.png",
+        "bear/Screenshot 2026-04-15 at 14.11 Background Removed.15.png",
+        "bear/Screenshot 2026-04-15 at 14.11 Background Removed.23.png",
+        "bear/Screenshot 2026-04-15 at 14.11 Background Removed.51.png",
+        "bear/Screenshot 2026-04-15 at 14.12 Background Removed.09.png",
+        "bear/Screenshot 2026-04-15 at 14.12 Background Removed.27.png",
+        "bear/Screenshot 2026-04-15 at 14.12 Background Removed.35.png",
+        "bear/Screenshot 2026-04-15 at 14.12 Background Removed.46.png",
+        "bear/Screenshot 2026-04-15 at 14.13 Background Removed.09.png",
+        "bear/Screenshot 2026-04-15 at 14.13 Background Removed.31.png",
+        "bear/Screenshot 2026-04-15 at 14.13 Background Removed.47.png",
+        "bear/Screenshot 2026-04-15 at 14.14 Background Removed.06.png"
+      ]
+    },
+    {
+      "id": "heart",
+      "label": "HEART",
+      "type": "image",
+      "items": [
+        "heart/17d919c7866c9d659e238fe66451f00f Background Removed.png",
+        "heart/307ed73820da6dc0bdfbe6d939647fd9 Background Removed.png",
+        "heart/Screenshot 2026-04-15 at 14.23 Background Removed.21.png",
+        "heart/Screenshot 2026-04-15 at 14.23 Background Removed.27.png",
+        "heart/Screenshot 2026-04-15 at 14.23 Background Removed.31.png",
+        "heart/Screenshot 2026-04-15 at 14.24 Background Removed.21.png",
+        "heart/Screenshot 2026-04-15 at 14.24 Background Removed.28.png",
+        "heart/Screenshot 2026-04-15 at 14.24 Background Removed.39.png",
+        "heart/Screenshot 2026-04-15 at 14.24 Background Removed.45.png",
+        "heart/Screenshot 2026-04-15 at 14.24 Background Removed.51.png",
+        "heart/Screenshot 2026-04-15 at 14.24 Background Removed.56.png",
+        "heart/Screenshot 2026-04-15 at 14.25 Background Removed.00.png",
+        "heart/Screenshot 2026-04-15 at 14.25 Background Removed.08.png",
+        "heart/Screenshot 2026-04-15 at 14.25 Background Removed.14.png",
+        "heart/Screenshot 2026-04-15 at 14.25 Background Removed.19.png",
+        "heart/Screenshot 2026-04-15 at 14.25 Background Removed.23.png",
+        "heart/d2b6f0f23f2c3841b2506cc857473b7a Background Removed.png",
+        "heart/f84c384c6bd9f7c1deff02da46d789fd Background Removed.png"
+      ]
+    },
+    {
+      "id": "others",
+      "label": "OTHERS",
+      "type": "image",
+      "items": [
+        "others/014e1bea845baf58e5e9027a63ba3d50 Background Removed.png",
+        "others/51e908faef48308690365a1351c744c0 Background Removed.png",
+        "others/55f6ee064783dd3dcf4fa48e378ccfa3 Background Removed.png",
+        "others/5a9b5d38d1d062b430e0ee8e39b286a1 Background Removed.png",
+        "others/Screenshot 2026-04-15 at 13.04 Background Removed Background Removed.13.png",
+        "others/Screenshot 2026-04-15 at 14.38 Background Removed.41.png",
+        "others/Screenshot 2026-04-15 at 14.38 Background Removed.49.png",
+        "others/Screenshot 2026-04-15 at 14.38 Background Removed.57.png",
+        "others/Screenshot 2026-04-15 at 14.39 Background Removed.21.png",
+        "others/Screenshot 2026-04-15 at 14.39 Background Removed.29.png",
+        "others/Screenshot 2026-04-15 at 14.39 Background Removed.37.png",
+        "others/Screenshot 2026-04-15 at 14.39 Background Removed.45.png",
+        "others/Screenshot 2026-04-15 at 14.39 Background Removed.53.png",
+        "others/Screenshot 2026-04-15 at 14.40 Background Removed.01.png",
+        "others/Screenshot 2026-04-15 at 14.40 Background Removed.32.png",
+        "others/Screenshot 2026-04-15 at 14.40 Background Removed.41.png",
+        "others/Screenshot 2026-04-15 at 14.40 Background Removed.54.png",
+        "others/Screenshot 2026-04-15 at 14.41 Background Removed.13.png",
+        "others/Screenshot 2026-04-15 at 14.41 Background Removed.22.png",
+        "others/Screenshot 2026-04-15 at 14.41 Background Removed.31.png",
+        "others/Screenshot 2026-04-15 at 14.41 Background Removed.45.png",
+        "others/b7ac948ce79f21e8005606af912c82f2 Background Removed.png",
+        "others/ff0769aded3cd6c03eb4e19bc2af9e25 Background Removed.png"
+      ]
+    },
+    {
+      "id": "shape",
+      "label": "SHAPE",
+      "type": "image",
+      "items": [
+        "shape/4450bcf757312330b65ec97af562569d Background Removed.png",
+        "shape/89ae7de01622d3c3913d9e728531eb2d Background Removed.png"
+      ]
+    },
+    {
+      "id": "star",
+      "label": "STAR",
+      "type": "image",
+      "items": [
+        "star/2210aa269fec342c836823858aca4538 Background Removed.png",
+        "star/a36d0ed4644a196c5677be2e2623dae7 Background Removed.png",
+        "star/d6919872cfec2cb98c82ff1d876a18b8 Background Removed.png"
       ]
     }
   ]

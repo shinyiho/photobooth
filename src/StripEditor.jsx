@@ -18,7 +18,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
   const dragSnapshotSaved = useRef(false);
   const [mode, setMode] = useState('sticker'); // 'sticker' | 'stamp' | 'draw'
   const [stickerCategories, setStickerCategories] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('classic');
+  const [activeCategory, setActiveCategory] = useState('acc');
   const [selectedSticker, setSelectedSticker] = useState({ type: 'emoji', emoji: DEFAULT_STICKERS[0] });
   const [selectedStamp, setSelectedStamp] = useState(0);
   const [stampColor, setStampColor] = useState(STAMP_COLORS[0]);
