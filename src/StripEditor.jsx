@@ -31,8 +31,8 @@ export default function StripEditor({ photos, onClose, onDone }) {
   const highlightRef = useRef(null);
   const containerRef = useRef(null);
 
-  // 10-minute editing timeout
-  const [timeLeft, setTimeLeft] = useState(600);
+  // 30-minute editing timeout
+  const [timeLeft, setTimeLeft] = useState(1800);
   const downloadRef = useRef(null);
   const timeUpRef = useRef(false);
 
