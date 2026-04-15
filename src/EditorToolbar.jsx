@@ -4,7 +4,6 @@ const BG_COLORS = [
   { name: 'Pink', value: '#ffb6c1' },
   { name: 'Lavender', value: '#e6e6fa' },
   { name: 'Mint', value: '#b2f5ea' },
-  { name: 'Peach', value: '#ffdab9' },
   { name: 'Sky', value: '#87ceeb' },
   { name: 'Lemon', value: '#fffacd' },
 ];
@@ -45,14 +44,17 @@ export default function EditorToolbar({
   drawColor, onDrawColorChange,
   drawSize, onDrawSizeChange,
   penType, onPenTypeChange,
-  onClearDrawing,
   children,
 }) {
   const categories = stickerCategories || [{ id: 'classic', label: 'CLASSIC', type: 'emoji', items: DEFAULT_STICKERS }];
   const currentCat = categories.find(c => c.id === activeCategory) || categories[0];
   return (
     <div className="editor-toolbar">
-      <div className="toolbar-section">
+      {children}
+
+      <div className="toolbar-divider" />
+
+      <div className="toolbar-section toolbar-section-bg">
         <span className="toolbar-label">BG</span>
         <div className="bg-colors">
           {BG_COLORS.map(c => (
@@ -67,34 +69,27 @@ export default function EditorToolbar({
         </div>
       </div>
 
-      <div className="toolbar-section">
-        <span className="toolbar-label">MODE</span>
-        <div className="mode-toggle">
-          <button
-            className={`btn btn-filter ${mode === 'sticker' ? 'active' : ''}`}
-            onClick={() => onModeChange('sticker')}
-          >
-            STICKER
-          </button>
-          <button
-            className={`btn btn-filter ${mode === 'stamp' ? 'active' : ''}`}
-            onClick={() => onModeChange('stamp')}
-          >
-            STAMP
-          </button>
-          <button
-            className={`btn btn-filter ${mode === 'draw' ? 'active' : ''}`}
-            onClick={() => onModeChange('draw')}
-          >
-            DRAW
-          </button>
-        </div>
+      <div className="toolbar-divider" />
+
+      <div className="toolbar-tabs">
+        <button
+          className={`toolbar-tab ${mode === 'sticker' ? 'active' : ''}`}
+          onClick={() => onModeChange('sticker')}
+        >STICKER</button>
+        <button
+          className={`toolbar-tab ${mode === 'stamp' ? 'active' : ''}`}
+          onClick={() => onModeChange('stamp')}
+        >STAMP</button>
+        <button
+          className={`toolbar-tab ${mode === 'draw' ? 'active' : ''}`}
+          onClick={() => onModeChange('draw')}
+        >DRAW</button>
       </div>
 
+      <div className="toolbar-tab-content">
       {mode === 'sticker' && (
         <>
           <div className="toolbar-section">
-            <span className="toolbar-label">TAB</span>
             <div className="sticker-tabs">
               {categories.map(c => (
                 <button
@@ -108,7 +103,6 @@ export default function EditorToolbar({
             </div>
           </div>
           <div className="toolbar-section">
-            <span className="toolbar-label">PICK</span>
             <div className="sticker-picker">
               {currentCat.items.map((item, i) => {
                 const isImage = currentCat.type === 'image';
@@ -132,46 +126,13 @@ export default function EditorToolbar({
               })}
             </div>
           </div>
-          <div className="toolbar-section">
-            <span className="toolbar-label">EDIT</span>
-            <div className="sticker-options">
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'size', 8)}
-                disabled={!selectedId}
-              >
-                SIZE +
-              </button>
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'size', -8)}
-                disabled={!selectedId}
-              >
-                SIZE -
-              </button>
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', -15)}
-                disabled={!selectedId}
-              >
-                &#8630; ROT
-              </button>
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', 15)}
-                disabled={!selectedId}
-              >
-                ROT &#8631;
-              </button>
-            </div>
-          </div>
         </>
       )}
 
       {mode === 'stamp' && (
         <>
           <div className="toolbar-section">
-            <span className="toolbar-label">PICK</span>
+
             <div className="sticker-picker">
               {STAMPS.map((s, i) => (
                 <button
@@ -185,7 +146,7 @@ export default function EditorToolbar({
             </div>
           </div>
           <div className="toolbar-section">
-            <span className="toolbar-label">COLOR</span>
+
             <div className="draw-colors">
               {STAMP_COLORS.map(c => (
                 <button
@@ -197,71 +158,23 @@ export default function EditorToolbar({
               ))}
             </div>
           </div>
-          <div className="toolbar-section">
-            <span className="toolbar-label">EDIT</span>
-            <div className="sticker-options">
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'size', 2)}
-                disabled={!selectedId}
-              >
-                SIZE +
-              </button>
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'size', -2)}
-                disabled={!selectedId}
-              >
-                SIZE -
-              </button>
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', -15)}
-                disabled={!selectedId}
-              >
-                &#8630; ROT
-              </button>
-              <button
-                className="btn btn-filter"
-                onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', 15)}
-                disabled={!selectedId}
-              >
-                ROT &#8631;
-              </button>
-            </div>
-          </div>
         </>
       )}
 
       {mode === 'draw' && (
         <div className="toolbar-section">
-          <span className="toolbar-label">PEN</span>
+
           <div className="draw-options">
             <div className="mode-toggle">
-              <button
-                className={`btn btn-filter ${penType === 'marker' ? 'active' : ''}`}
-                onClick={() => onPenTypeChange('marker')}
-              >
-                MARKER
-              </button>
-              <button
-                className={`btn btn-filter ${penType === 'neon' ? 'active' : ''}`}
-                onClick={() => onPenTypeChange('neon')}
-              >
-                NEON
-              </button>
-              <button
-                className={`btn btn-filter ${penType === 'airbrush' ? 'active' : ''}`}
-                onClick={() => onPenTypeChange('airbrush')}
-              >
-                AIRBRUSH
-              </button>
-              <button
-                className={`btn btn-filter ${penType === 'glitter' ? 'active' : ''}`}
-                onClick={() => onPenTypeChange('glitter')}
-              >
-                GLITTER
-              </button>
+              {['marker', 'neon', 'airbrush', 'glitter'].map(p => (
+                <button
+                  key={p}
+                  className={`btn btn-filter ${penType === p ? 'active' : ''}`}
+                  onClick={() => onPenTypeChange(p)}
+                >
+                  {p.toUpperCase()}
+                </button>
+              ))}
             </div>
             <div className="draw-colors">
               {DRAW_COLORS.map(c => (
@@ -274,7 +187,6 @@ export default function EditorToolbar({
               ))}
             </div>
             <div className="draw-size">
-              <span className="toolbar-label">SIZE</span>
               <input
                 type="range"
                 min="4"
@@ -283,14 +195,11 @@ export default function EditorToolbar({
                 onChange={e => onDrawSizeChange(Number(e.target.value))}
               />
             </div>
-            <button className="btn btn-filter" onClick={onClearDrawing}>
-              CLEAR
-            </button>
           </div>
         </div>
       )}
+      </div>
 
-      {children}
     </div>
   );
 }

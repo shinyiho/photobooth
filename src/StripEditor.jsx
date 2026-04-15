@@ -467,14 +467,6 @@ export default function StripEditor({ photos, onClose, onDone }) {
     setStickers(prev => prev.filter(s => s.id !== id));
   }, [saveSnapshot]);
 
-  const clearDrawing = useCallback(() => {
-    saveSnapshot();
-    const dc = drawCanvasRef.current;
-    if (dc) {
-      const ctx = dc.getContext('2d');
-      ctx.clearRect(0, 0, dc.width, dc.height);
-    }
-  }, [saveSnapshot]);
 
   // Export final image
   const download = useCallback(async () => {
@@ -560,7 +552,6 @@ export default function StripEditor({ photos, onClose, onDone }) {
           onDrawSizeChange={setDrawSize}
           penType={penType}
           onPenTypeChange={setPenType}
-          onClearDrawing={clearDrawing}
         >
           <PreviewActions
             onUndo={undo}
@@ -569,6 +560,9 @@ export default function StripEditor({ photos, onClose, onDone }) {
             canRedo={redoStack.current.length > 0}
             onDownload={download}
             onClose={onClose}
+            mode={mode}
+            selectedId={selectedId}
+            onAdjustSticker={adjustSticker}
           />
         </EditorToolbar>
 

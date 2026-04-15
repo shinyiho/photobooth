@@ -486,8 +486,8 @@
 }
 
 .btn-download {
-  font-size: 10px;
-  padding: 12px 20px;
+  font-size: 8px;
+  padding: 6px 20px;
   background: transparent;
   border-color: var(--cyan);
   color: var(--cyan);
@@ -603,8 +603,16 @@
 
 .preview-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.preview-actions-row {
+  display: flex;
   gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* ---- Editor Timer ---- */
@@ -644,7 +652,7 @@
   flex-direction: column;
   gap: 12px;
   min-width: 200px;
-  max-width: 20vw;
+  max-width: 18vw;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
   background: var(--bg-card);
@@ -660,6 +668,52 @@
   flex-wrap: wrap;
 }
 
+.toolbar-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 4px 0;
+}
+
+.toolbar-tabs {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.toolbar-tab {
+  flex: 1;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 10px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: -1px;
+}
+
+.toolbar-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.toolbar-tab.active {
+  color: var(--pink);
+  border-bottom-color: var(--pink);
+  text-shadow: 0 0 8px rgba(255, 107, 157, 0.6);
+}
+
+.toolbar-tab-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
 .toolbar-label {
   font-family: 'Press Start 2P', monospace;
   font-size: 8px;
@@ -672,6 +726,10 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.toolbar-section-bg {
+  flex-wrap: nowrap;
 }
 
 .color-swatch {
@@ -702,7 +760,20 @@
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+  justify-content: space-around;
 }
+
+@media (max-width: 600px) {
+  .sticker-picker {
+    flex-wrap: nowrap;
+    width: 80vw;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+  }
+}
+
 
 .sticker-btn {
   width: 50px;
@@ -738,16 +809,19 @@
 .draw-colors {
   display: flex;
   gap: 4px;
+  margin: auto;
 }
 
 .draw-size {
   display: flex;
   align-items: center;
   gap: 6px;
+  margin: auto;
+  margin-top: 4px;
 }
 
 .draw-size input[type="range"] {
-  width: 80px;
+  width: 200px;
   accent-color: var(--pink);
   height: 4px;
 }
@@ -1100,6 +1174,12 @@
     min-width: unset;
     max-height: none;
     width: 100%;
+    gap: 6px;
+  }
+
+  .color-swatch {
+    width: 18px;
+    height: 18px;
   }
 
   .editor-canvas-wrap {
