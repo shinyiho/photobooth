@@ -1,8 +1,9 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { saveBoardLayout, deleteItem } from './boardService';
 
+// Virtual coordinate system (positions stored in Firestore use these)
 const BOARD_W = 1200;
-const BOARD_H = 800;
+const BOARD_H = BOARD_W * 3;
 
 export default function PhotoBoard({ items: propItems, myStripId, onUpdateItem, onDeleteItem, onNewRound }) {
   const boardRef = useRef(null);

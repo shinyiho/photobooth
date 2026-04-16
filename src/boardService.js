@@ -5,7 +5,7 @@ import {
 } from 'firebase/firestore';
 
 const BOARD_W = 1200;
-const BOARD_H = 800;
+const BOARD_H = BOARD_W * 3;
 const TAPE_COLORS = ['#ffffffcc', '#ffd700cc', '#ff69b4cc', '#87ceebcc', '#98fb98cc'];
 
 function compressImage(dataUrl, quality = 0.7) {
