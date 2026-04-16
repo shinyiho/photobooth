@@ -1,16 +1,43 @@
-# Photobooth
+# 📸 Retro Photobooth
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A retro-styled photobooth web app inspired by purikura and 80s arcade aesthetics. Take 4 photos, decorate your strip, and pin it to a shared board with friends — all in the browser.
 
-Currently, two official plugins are available:
+## Screenshots
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Camera & Filters
+![Camera view](public/screenshots/camera.png)
 
-## React Compiler
+### Shared Board
+![Shared board](public/screenshots/board.png)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Mobile
+<p float="left">
+  <img src="public/screenshots/mobile-camera.png" width="45%" />
+  <img src="public/screenshots/mobile-board.png" width="45%" />
+</p>
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **18+ film filters** — Pure White, Tokyo Film, 90s Booth, Grainy B&W, 70s Harsh, and more
+- **Strip editor** — add stickers, stamps, freehand drawing (marker, neon, airbrush, glitter)
+- **Sticker categories** — acc, alphabet, bear, heart, others, shape, star
+- **Shared board** — strips are uploaded to Firebase and pinned on a live corkboard others can see
+- **Mobile friendly** — responsive layout optimised for phones
+- **30-minute timer** — auto-saves your strip when time is up
+
+## Stack
+
+- React 19 + Vite
+- Firebase Firestore
+- Canvas API for filters and export
+- Playwright for screenshots
+
+## Local Dev
+
+```bash
+nvm use 20
+npm install
+npm run dev
+```
+
+Requires a `.env.local` with Firebase credentials (see `.env.example`).
