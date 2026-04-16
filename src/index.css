@@ -21,13 +21,16 @@
 
 html, body, #root {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
   font-family: 'Press Start 2P', monospace;
   background: var(--bg-dark);
   color: var(--text);
-  overflow-x: hidden;
+  overscroll-behavior: none;
+  position: fixed;
+  width: 100%;
 }
 
 /* Scrollbar - hidden globally */
