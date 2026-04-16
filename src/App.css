@@ -34,9 +34,9 @@
 }
 
 @keyframes countPulse {
-  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes slideIn {
@@ -65,12 +65,14 @@
 
 /* ---- App Container ---- */
 .app {
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ---- Starfield Background ---- */
@@ -306,6 +308,44 @@
   pointer-events: none;
 }
 
+/* Photo counter overlay — film strip style */
+.photo-counter-overlay {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.counter-frame {
+  width: 16px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  transition: all 0.3s;
+}
+
+.counter-frame.taken {
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: 0 0 6px rgba(255, 107, 157, 0.6);
+}
+
+.counter-frame.current {
+  border-color: var(--yellow);
+  animation: pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(255, 230, 109, 0.5);
+}
+
+.counter-frame.pending {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  box-shadow: 0 0 6px rgba(255, 230, 109, 0.6);
+}
+
 /* Countdown */
 .countdown {
   position: absolute;
@@ -442,6 +482,16 @@
   cursor: pointer;
   transition: all 0.15s;
   text-transform: uppercase;
+}
+
+.btn-icon {
+  font-size: 14px !important;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-filter {
@@ -684,8 +734,8 @@
 .toolbar-tab {
   flex: 1;
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px;
-  padding: 10px 4px;
+  font-size: 16px;
+  padding: 6px 4px;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -771,6 +821,11 @@
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .sticker-picker::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -806,25 +861,76 @@
   flex-wrap: wrap;
 }
 
+.draw-colors-size {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: auto;
+}
+
 .draw-colors {
   display: flex;
   gap: 4px;
-  margin: auto;
 }
 
 .draw-size {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: auto;
-  margin-top: 4px;
+  position: relative;
+  height: 20px;
+}
+
+.draw-size::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  clip-path: polygon(0% 85%, 100% 15%, 100% 85%);
+  pointer-events: none;
+  border-radius: 2px;
 }
 
 .draw-size input[type="range"] {
-  width: 200px;
-  accent-color: var(--pink);
-  height: 4px;
+  width: 160px;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
+
+.draw-size input[type="range"]::-webkit-slider-runnable-track {
+  height: 20px;
+  background: transparent;
+}
+
+.draw-size input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 6px rgba(255, 107, 157, 0.6);
+}
+
+.draw-size input[type="range"]::-moz-range-track {
+  height: 20px;
+  background: transparent;
+  border: none;
+}
+
+.draw-size input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 6px rgba(255, 107, 157, 0.6);
+  border: none;
+}
+
 
 /* ---- Editor Canvas ---- */
 .editor-canvas-wrap {
@@ -833,33 +939,43 @@
   max-height: calc(100vh - 80px);
   overflow: hidden;
   cursor: crosshair;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
 }
 
 .editor-canvas-wrap.draw-active {
+  touch-action: pan-y;
+}
+
+.draw-active .editor-canvas {
   touch-action: none;
+}
+
+.editor-canvas-inner {
+  position: relative;
+  display: inline-block;
+  border: 3px solid var(--pink);
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+  overflow: hidden;
 }
 
 .editor-canvas {
   max-height: calc(100vh - 80px);
   width: auto;
   display: block;
-  border: 3px solid var(--pink);
-  box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+  max-width: 100%;
 }
 
 .editor-draw-layer {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  max-height: none;
-  border: none;
-  box-shadow: none;
+  border: none !important;
+  box-shadow: none !important;
   pointer-events: none;
+  z-index: 100;
 }
 
 .placed-sticker {
@@ -950,6 +1066,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  touch-action: none;
 }
 
 .board-locker {
@@ -1140,8 +1257,8 @@
   }
 
   .btn-capture {
-    font-size: 9px;
-    padding: 8px 16px;
+    font-size: 14px;
+    padding: 14px 36px;
   }
 
   .footer {
@@ -1155,18 +1272,17 @@
 
   /* Editor mobile layout */
   .preview-overlay {
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    align-items: flex-start;
-    padding: 10px;
+    overflow: hidden !important;
+    padding: 0;
   }
 
   .editor-modal {
     flex-direction: column;
     align-items: center;
-    max-width: 100%;
-    max-height: none;
-    overflow: visible;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
   }
 
   .editor-toolbar {
@@ -1174,7 +1290,9 @@
     min-width: unset;
     max-height: none;
     width: 100%;
-    gap: 6px;
+    gap: 2px;
+    flex-shrink: 0;
+    z-index: 200;
   }
 
   .color-swatch {
@@ -1182,9 +1300,75 @@
     height: 18px;
   }
 
+  .preview-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .preview-actions-row {
+    display: contents;
+  }
+
+  .preview-actions .btn {
+    font-size: 6px;
+    padding: 4px 6px;
+  }
+
+  .preview-actions-edit {
+    display: none !important;
+  }
+
+  .editor-timer-block {
+    display: none;
+  }
+
+  .toolbar-tab {
+    padding: 4px 4px;
+    font-size: 14px;
+  }
+
+  .toolbar-divider {
+    display: none;
+  }
+
+  .toolbar-section-bg {
+    display: none;
+  }
+
+
+  .draw-colors-size {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .draw-size input[type="range"] {
+    width: 90px;
+  }
+
+  .sticker-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 80vw;
+    scrollbar-width: none;
+  }
+
+  .sticker-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
   .editor-canvas-wrap {
-    max-height: none;
+    flex: 1;
     width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .editor-canvas-inner {
+    position: relative;
+    margin: 0 16px;
+    max-width: calc(100% - 32px);
   }
 
   .editor-canvas {
@@ -1194,6 +1378,7 @@
   }
 
   .editor-timer-block {
+    display: none;
     max-width: 100%;
     min-width: unset;
     width: 100%;
@@ -1261,5 +1446,37 @@
   * {
     scrollbar-width: thin;
     scrollbar-color: #ff69b4 rgba(255, 182, 213, 0.15);
+  }
+}
+
+/* Remove sticky hover effects on touch devices */
+@media (hover: none) {
+  .btn-filter:hover:not(.active) {
+    background: transparent;
+    color: var(--purple);
+    box-shadow: none;
+  }
+  .btn-capture:hover {
+    background: var(--pink);
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.4);
+    transform: none;
+  }
+  .btn-download:hover {
+    background: transparent;
+    color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+  }
+  .color-swatch:hover:not(.active) {
+    transform: none;
+  }
+  .sticker-tab:hover:not(.active) {
+    background: transparent;
+    color: var(--purple);
+    box-shadow: none;
+  }
+  .radio-btn:hover {
+    border-color: #555;
+    color: #999;
+    box-shadow: none;
   }
 }
