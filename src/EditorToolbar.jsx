@@ -107,7 +107,7 @@ export default function EditorToolbar({
               {currentCat.items.map((item, i) => {
                 const isImage = currentCat.type === 'image';
                 const stickerVal = isImage
-                  ? { type: 'image', src: '/stickers/' + item }
+                  ? { type: 'image', src: import.meta.env.BASE_URL + 'stickers/' + item }
                   : { type: 'emoji', emoji: item };
                 const isActive = isImage
                   ? selectedSticker?.src === stickerVal.src
@@ -119,7 +119,7 @@ export default function EditorToolbar({
                     onClick={() => onStickerChange(stickerVal)}
                   >
                     {isImage
-                      ? <img src={'/stickers/' + item} alt="" />
+                      ? <img src={import.meta.env.BASE_URL + 'stickers/' + item} alt="" />
                       : item}
                   </button>
                 );

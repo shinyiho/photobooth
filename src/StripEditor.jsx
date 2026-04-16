@@ -13,6 +13,8 @@ export default function StripEditor({ photos, onClose, onDone }) {
   const drawCanvasRef = useRef(null);
   const [bgColor, setBgColor] = useState('#ffffff');
   const [stickers, setStickers] = useState([]);
+  const bgColorRef = useRef('#ffffff');
+  const stickersRef = useRef([]);
   const [selectedId, setSelectedId] = useState(null);
   const isDraggingSticker = useRef(false);
   const dragSnapshotSaved = useRef(false);
@@ -82,22 +84,25 @@ export default function StripEditor({ photos, onClose, onDone }) {
     ctx.putImageData(imageData, 0, 0);
   }, []);
 
+  // Keep refs in sync so saveSnapshot always reads fresh values
+  bgColorRef.current = bgColor;
+  stickersRef.current = stickers;
+
   const saveSnapshot = useCallback(() => {
     undoStack.current.push({
-      bgColor,
-      stickers: JSON.parse(JSON.stringify(stickers)),
+      bgColor: bgColorRef.current,
+      stickers: JSON.parse(JSON.stringify(stickersRef.current)),
       drawData: getDrawData(),
     });
     redoStack.current = [];
     setHistoryLen(undoStack.current.length);
-  }, [bgColor, stickers, getDrawData]);
+  }, [getDrawData]);
 
   const undo = useCallback(() => {
     if (undoStack.current.length === 0) return;
-    // Save current state to redo
     redoStack.current.push({
-      bgColor,
-      stickers: JSON.parse(JSON.stringify(stickers)),
+      bgColor: bgColorRef.current,
+      stickers: JSON.parse(JSON.stringify(stickersRef.current)),
       drawData: getDrawData(),
     });
     const prev = undoStack.current.pop();
@@ -105,14 +110,13 @@ export default function StripEditor({ photos, onClose, onDone }) {
     setStickers(prev.stickers);
     setDrawData(prev.drawData);
     setHistoryLen(undoStack.current.length);
-  }, [bgColor, stickers, getDrawData, setDrawData]);
+  }, [getDrawData, setDrawData]);
 
   const redo = useCallback(() => {
     if (redoStack.current.length === 0) return;
-    // Save current state to undo
     undoStack.current.push({
-      bgColor,
-      stickers: JSON.parse(JSON.stringify(stickers)),
+      bgColor: bgColorRef.current,
+      stickers: JSON.parse(JSON.stringify(stickersRef.current)),
       drawData: getDrawData(),
     });
     const next = redoStack.current.pop();
@@ -120,7 +124,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
     setStickers(next.stickers);
     setDrawData(next.drawData);
     setHistoryLen(undoStack.current.length);
-  }, [bgColor, stickers, getDrawData, setDrawData]);
+  }, [getDrawData, setDrawData]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -178,7 +182,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
 
   // Fetch sticker manifest
   useEffect(() => {
-    fetch('/stickers/stickers.json')
+    fetch(import.meta.env.BASE_URL + 'stickers/stickers.json')
       .then(r => r.json())
       .then(data => setStickerCategories(data.categories))
       .catch(() => {});
