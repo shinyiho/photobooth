@@ -208,6 +208,7 @@ export default function Photobooth() {
   const [showBoard, setShowBoard] = useState(false);
   const [boardItems, setBoardItems] = useState([]);
   const [myStripId, setMyStripId] = useState(null);
+  const [countdown, setCountdown] = useState(null);
 
   const startCamera = useCallback(async () => {
     try {
@@ -301,6 +302,22 @@ export default function Photobooth() {
     setPendingPhoto(null);
   }, [pendingPhoto]);
 
+  const startCountdown = useCallback(() => {
+    if (!stream || countdown !== null) return;
+    setCountdown(3);
+    let count = 3;
+    const timer = setInterval(() => {
+      count--;
+      if (count > 0) {
+        setCountdown(count);
+      } else {
+        clearInterval(timer);
+        setCountdown(null);
+        takePhoto();
+      }
+    }, 1000);
+  }, [stream, countdown, takePhoto]);
+
   const retakePhoto = useCallback(() => {
     setPendingPhoto(null);
   }, []);
@@ -340,6 +357,21 @@ export default function Photobooth() {
             />
           )}
 
+          <div className="photo-counter-overlay">
+            {[0, 1, 2, 3].map(i => {
+              const taken = i < photos.length;
+              const current = i === photos.length && !pendingPhoto;
+              const pending = i === photos.length && !!pendingPhoto;
+              return <div key={i} className={`counter-frame ${taken ? 'taken' : ''} ${current ? 'current' : ''} ${pending ? 'pending' : ''}`} />;
+            })}
+          </div>
+
+          {countdown !== null && (
+            <div className="countdown">
+              <span key={countdown}>{countdown}</span>
+            </div>
+          )}
+
           {flash && <div className="flash" />}
 
           {pendingPhoto && (
@@ -373,8 +405,8 @@ export default function Photobooth() {
             ) : (
               <button
                 className="btn btn-capture"
-                onClick={takePhoto}
-                disabled={!stream}
+                onClick={startCountdown}
+                disabled={!stream || countdown !== null}
               >
                 SNAP!
               </button>
