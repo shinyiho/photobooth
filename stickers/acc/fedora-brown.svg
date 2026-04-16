@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="200" height="140">
+  <defs>
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <g filter="url(#sketch)">
+    <!-- Brim -->
+    <ellipse cx="100" cy="110" rx="88" ry="20" fill="#8b6914" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Crown -->
+    <path d="M40,110 Q38,70 55,55 Q70,42 100,38 Q130,42 145,55 Q162,70 160,110" fill="#a07828" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Crown dent -->
+    <path d="M65,52 Q80,62 100,58 Q120,62 135,52" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+    <!-- Maroon band -->
+    <rect x="42" y="85" width="116" height="14" rx="2" fill="#722f37" stroke="#333" stroke-width="3"/>
+    <!-- Marker texture -->
+    <path d="M60,68 Q85,58 110,65" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M55,80 Q80,74 105,78" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="4" stroke-linecap="round"/>
+    <!-- Shadow -->
+    <path d="M50,108 Q100,98 150,108" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>

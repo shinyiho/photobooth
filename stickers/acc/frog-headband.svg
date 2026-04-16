@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+  <defs>
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="11" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <g filter="url(#sketch)">
+    <!-- Headband -->
+    <path d="M20,100 Q100,70 180,100" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+    <!-- Left eye stalk -->
+    <line x1="55" y1="82" x2="48" y2="40" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+    <!-- Left eyeball -->
+    <circle cx="48" cy="32" r="20" fill="#7ec850" stroke="#333" stroke-width="4"/>
+    <circle cx="48" cy="28" r="10" fill="#fff" stroke="#333" stroke-width="2.5"/>
+    <circle cx="48" cy="27" r="5" fill="#222"/>
+    <circle cx="46" cy="25" r="2" fill="#fff"/>
+    <!-- Right eye stalk -->
+    <line x1="145" y1="82" x2="152" y2="40" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+    <!-- Right eyeball -->
+    <circle cx="152" cy="32" r="20" fill="#7ec850" stroke="#333" stroke-width="4"/>
+    <circle cx="152" cy="28" r="10" fill="#fff" stroke="#333" stroke-width="2.5"/>
+    <circle cx="152" cy="27" r="5" fill="#222"/>
+    <circle cx="150" cy="25" r="2" fill="#fff"/>
+    <!-- Marker texture -->
+    <path d="M38,38 Q42,22 55,28" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M142,38 Q146,22 159,28" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

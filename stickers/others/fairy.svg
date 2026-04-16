@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" width="200" height="250">
+  <defs>
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="4" seed="42" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <g filter="url(#sketch)">
+    <!-- === LEFT WING === -->
+    <path d="M70,108 Q28,58 22,82 Q14,108 40,112 Q24,92 34,78 Q44,68 58,88 Z" fill="#8ef" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M64,116 Q22,118 20,142 Q18,160 46,152 Q28,146 30,132 Q34,124 50,122 Z" fill="#8ef" stroke="#333" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Wing marker streaks -->
+    <path d="M58,100 Q38,82 30,85" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- === RIGHT WING === -->
+    <path d="M130,108 Q172,58 178,82 Q186,108 160,112 Q176,92 166,78 Q156,68 142,88 Z" fill="#8ef" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M136,116 Q178,118 180,142 Q182,160 154,152 Q172,146 170,132 Q166,124 150,122 Z" fill="#8ef" stroke="#333" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M142,100 Q162,82 170,85" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- === BODY === -->
+    <path d="M72,118 Q70,155 62,188 Q60,202 72,200 Q78,190 84,202 Q90,212 96,200 Q100,212 106,200 Q112,212 118,202 Q124,190 130,200 Q140,202 138,188 Q130,155 128,118 Q128,95 100,90 Q72,95 72,118 Z" fill="#ff8ec4" stroke="#333" stroke-width="4.5" stroke-linejoin="round"/>
+    <!-- Body marker texture -->
+    <path d="M82,108 Q86,135 82,162" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M110,115 Q112,140 108,158" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- === HEAD === -->
+    <ellipse cx="100" cy="72" rx="38" ry="35" fill="#ffaad4" stroke="#333" stroke-width="4.5"/>
+    <!-- Marker texture on head -->
+    <path d="M78,58 Q92,50 105,56" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M82,68 Q95,62 108,66" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- === FACE === -->
+    <!-- Eyes — simple doodle dots -->
+    <circle cx="86" cy="72" r="6" fill="#333"/>
+    <circle cx="114" cy="72" r="6" fill="#333"/>
+    <!-- Eye shines -->
+    <circle cx="84" cy="69" r="2.5" fill="#fff"/>
+    <circle cx="112" cy="69" r="2.5" fill="#fff"/>
+
+    <!-- Blush — scribble style -->
+    <ellipse cx="74" cy="82" rx="9" ry="5" fill="#ff6ba0" opacity="0.45"/>
+    <ellipse cx="126" cy="82" rx="9" ry="5" fill="#ff6ba0" opacity="0.45"/>
+    <!-- Blush hatch lines -->
+    <g stroke="#ff4d88" stroke-width="1.2" stroke-linecap="round" opacity="0.35">
+      <line x1="68" y1="80" x2="72" y2="84"/>
+      <line x1="71" y1="79" x2="75" y2="83"/>
+      <line x1="74" y1="80" x2="78" y2="84"/>
+      <line x1="120" y1="80" x2="124" y2="84"/>
+      <line x1="123" y1="79" x2="127" y2="83"/>
+      <line x1="126" y1="80" x2="130" y2="84"/>
+    </g>
+
+    <!-- Smile — wobbly doodle line -->
+    <path d="M92,85 Q96,91 100,88 Q104,91 108,85" fill="none" stroke="#333" stroke-width="2.8" stroke-linecap="round"/>
+
+    <!-- === AHOGE === -->
+    <path d="M100,38 Q94,16 106,8 Q114,4 108,14 Q104,24 100,38" fill="#ffaad4" stroke="#333" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Ahoge tip dot -->
+    <circle cx="108" cy="8" r="4" fill="#8ef" stroke="#333" stroke-width="2.5"/>
+
+    <!-- === WAND === -->
+    <line x1="136" y1="138" x2="164" y2="100" stroke="#333" stroke-width="4.5" stroke-linecap="round"/>
+    <line x1="136" y1="138" x2="164" y2="100" stroke="#ffd700" stroke-width="2.8" stroke-linecap="round"/>
+    <!-- Wand star -->
+    <g transform="translate(166,94) rotate(-15)">
+      <path d="M0,-11 L3,-4 L10,-4 L5,1 L7,8 L0,4 L-7,8 L-5,1 L-10,-4 L-3,-4 Z" fill="#ffd700" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="-1" cy="-3" r="2" fill="rgba(255,255,255,0.45)"/>
+    </g>
+
+    <!-- === LITTLE ARMS (doodle stubs) === -->
+    <path d="M72,128 Q58,132 52,126" fill="none" stroke="#333" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M128,128 Q136,130 136,138" fill="none" stroke="#333" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- === SPARKLES (outside filter for crispness) === -->
+  <g fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round">
+    <g transform="translate(38,40)">
+      <line x1="0" y1="-6" x2="0" y2="6"/>
+      <line x1="-6" y1="0" x2="6" y2="0"/>
+      <line x1="-4" y1="-4" x2="4" y2="4"/>
+      <line x1="4" y1="-4" x2="-4" y2="4"/>
+    </g>
+    <g transform="translate(162,52)">
+      <line x1="0" y1="-5" x2="0" y2="5"/>
+      <line x1="-5" y1="0" x2="5" y2="0"/>
+    </g>
+    <g transform="translate(46,178)">
+      <line x1="0" y1="-4" x2="0" y2="4"/>
+      <line x1="-4" y1="0" x2="4" y2="0"/>
+    </g>
+    <g transform="translate(158,168)">
+      <line x1="0" y1="-5" x2="0" y2="5"/>
+      <line x1="-5" y1="0" x2="5" y2="0"/>
+      <line x1="-3" y1="-3" x2="3" y2="3"/>
+      <line x1="3" y1="-3" x2="-3" y2="3"/>
+    </g>
+  </g>
+  <!-- Small doodle dots -->
+  <circle cx="32" cy="130" r="2.5" fill="#333"/>
+  <circle cx="172" cy="138" r="2" fill="#333"/>
+  <circle cx="52" cy="48" r="1.8" fill="#333"/>
+</svg>

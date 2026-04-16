@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100" width="160" height="100">
+  <defs>
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="15" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <pattern id="polka" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="3" fill="#fff" opacity="0.55"/>
+      <circle cx="11" cy="11" r="3" fill="#fff" opacity="0.55"/>
+    </pattern>
+    <clipPath id="bowClipL"><path d="M80,50 Q40,10 15,30 Q0,42 12,55 Q25,68 55,62 Q70,58 80,50 Z"/></clipPath>
+    <clipPath id="bowClipR"><path d="M80,50 Q120,10 145,30 Q160,42 148,55 Q135,68 105,62 Q90,58 80,50 Z"/></clipPath>
+  </defs>
+  <g filter="url(#sketch)">
+    <!-- Left ribbon tail -->
+    <path d="M55,65 Q35,78 30,95 Q34,96 40,90 Q48,80 58,72 Z" fill="#ff6b8a" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Right ribbon tail -->
+    <path d="M105,65 Q125,78 130,95 Q126,96 120,90 Q112,80 102,72 Z" fill="#ff6b8a" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Left lobe -->
+    <path d="M80,50 Q40,10 15,30 Q0,42 12,55 Q25,68 55,62 Q70,58 80,50 Z" fill="#ff8da1" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Left polka dots -->
+    <rect x="0" y="0" width="160" height="100" fill="url(#polka)" clip-path="url(#bowClipL)"/>
+    <!-- Left fold -->
+    <path d="M68,45 Q45,28 28,38" fill="none" stroke="#e0556e" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <!-- Right lobe -->
+    <path d="M80,50 Q120,10 145,30 Q160,42 148,55 Q135,68 105,62 Q90,58 80,50 Z" fill="#ff8da1" stroke="#333" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Right polka dots -->
+    <rect x="0" y="0" width="160" height="100" fill="url(#polka)" clip-path="url(#bowClipR)"/>
+    <!-- Right fold -->
+    <path d="M92,45 Q115,28 132,38" fill="none" stroke="#e0556e" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <!-- Center knot -->
+    <ellipse cx="80" cy="52" rx="12" ry="10" fill="#e0556e" stroke="#333" stroke-width="3.5"/>
+    <!-- Knot shine -->
+    <ellipse cx="77" cy="48" rx="4" ry="3" fill="rgba(255,255,255,0.35)"/>
+  </g>
+</svg>
