@@ -466,6 +466,9 @@ export default function StripEditor({ photos, onClose, onDone }) {
   }, [saveSnapshot]);
 
   const startDragSelected = useCallback((e, id) => {
+    // Ignore second finger (pinch gesture) — don't change selection
+    if (e.touches && e.touches.length > 1) return;
+    if (isDraggingSticker.current || gestureRef.current) return;
     e.stopPropagation();
     setSelectedId(id);
     isDraggingSticker.current = true;
