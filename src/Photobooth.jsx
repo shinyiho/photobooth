@@ -62,6 +62,282 @@ function addVignette(ctx, w, h, strength) {
   ctx.fillRect(0, 0, w, h);
 }
 
+// YCbCr skin detection: returns true if pixel is likely skin
+function isSkin(r, g, b) {
+  const y  =  0.299 * r + 0.587 * g + 0.114 * b;
+  const cb = -0.169 * r - 0.331 * g + 0.500 * b + 128;
+  const cr =  0.500 * r - 0.419 * g - 0.081 * b + 128;
+  return y > 50 && y < 230 && cb > 77 && cb < 127 && cr > 133 && cr < 173;
+}
+
+// Box blur helper (separable, fast)
+function boxBlur(src, w, h, radius) {
+  const out = new Float32Array(src.length);
+  const len = w * h;
+  // Horizontal pass
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      for (let dx = -radius; dx <= radius; dx++) {
+        const nx = Math.min(w - 1, Math.max(0, x + dx));
+        const ni = (y * w + nx) * 4;
+        sumR += src[ni]; sumG += src[ni + 1]; sumB += src[ni + 2];
+        count++;
+      }
+      const i = (y * w + x) * 4;
+      out[i] = sumR / count; out[i + 1] = sumG / count; out[i + 2] = sumB / count; out[i + 3] = src[i + 3];
+    }
+  }
+  const out2 = new Float32Array(out.length);
+  // Vertical pass
+  for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) {
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      for (let dy = -radius; dy <= radius; dy++) {
+        const ny = Math.min(h - 1, Math.max(0, y + dy));
+        const ni = (ny * w + x) * 4;
+        sumR += out[ni]; sumG += out[ni + 1]; sumB += out[ni + 2];
+        count++;
+      }
+      const i = (y * w + x) * 4;
+      out2[i] = sumR / count; out2[i + 1] = sumG / count; out2[i + 2] = sumB / count; out2[i + 3] = out[i + 3];
+    }
+  }
+  return out2;
+}
+
+// 醒圖-style 磨皮: high-pass invert overlay blend, skin-only
+// Removes pores/fine texture while keeping edges and structure perfectly sharp
+function applyMopi(ctx, w, h, blurRadius = 10, strength = 0.4) {
+  const img = ctx.getImageData(0, 0, w, h);
+  const d = img.data;
+  const blurred = boxBlur(d, w, h, blurRadius);
+
+  for (let i = 0; i < d.length; i += 4) {
+    if (!isSkin(d[i], d[i + 1], d[i + 2])) continue;
+
+    for (let c = 0; c < 3; c++) {
+      const orig = d[i + c];
+      const blur = blurred[i + c];
+      // High-pass = orig - blur + 128 (the texture layer)
+      const highPass = orig - blur + 128;
+      // Invert the high-pass
+      const inverted = 255 - highPass;
+      // Overlay blend: combines inverted high-pass with original
+      // This specifically cancels out fine texture (pores) while keeping structure
+      let blended;
+      if (orig <= 128) {
+        blended = (2 * orig * inverted) / 255;
+      } else {
+        blended = 255 - (2 * (255 - orig) * (255 - inverted)) / 255;
+      }
+      // Mix with original at strength ratio
+      d[i + c] = Math.round(orig + (blended - orig) * strength);
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// High-pass frequency separation: isolate texture (wrinkles), reduce it, add back
+function applyFrequencySeparation(ctx, w, h, blurRadius = 10, textureReduce = 0.5) {
+  const img = ctx.getImageData(0, 0, w, h);
+  const d = img.data;
+  const blurred = boxBlur(d, w, h, blurRadius);
+
+  for (let i = 0; i < d.length; i += 4) {
+    if (!isSkin(d[i], d[i + 1], d[i + 2])) continue;
+    for (let c = 0; c < 3; c++) {
+      // High-freq = original - blurred (the texture/wrinkle layer)
+      const highFreq = d[i + c] - blurred[i + c];
+      // Reduce high-freq and add back to blurred base
+      d[i + c] = Math.min(255, Math.max(0, Math.round(blurred[i + c] + highFreq * textureReduce)));
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// Multi-pass bilateral with skin mask: 3 scales for different wrinkle sizes
+function applySkinSmoothing(ctx, w, h, _radius = 5, intensity = 0.7) {
+  const passes = [
+    { radius: 3, threshold: 25 },  // skin texture smoothing
+  ];
+
+  for (const pass of passes) {
+    const img = ctx.getImageData(0, 0, w, h);
+    const d = img.data;
+    const src = new Uint8ClampedArray(d);
+
+    for (let i = 0; i < d.length; i += 4) {
+      if (!isSkin(src[i], src[i + 1], src[i + 2])) continue;
+
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+      const cR = src[i], cG = src[i + 1], cB = src[i + 2];
+      const idx = i / 4;
+      const x = idx % w, y = (idx / w) | 0;
+      const r = pass.radius;
+      const step = r > 6 ? 2 : 1;
+
+      for (let dy = -r; dy <= r; dy += step) {
+        const ny = y + dy;
+        if (ny < 0 || ny >= h) continue;
+        for (let dx = -r; dx <= r; dx += step) {
+          const nx = x + dx;
+          if (nx < 0 || nx >= w) continue;
+          const ni = (ny * w + nx) * 4;
+          const diff = (Math.abs(src[ni] - cR) + Math.abs(src[ni + 1] - cG) + Math.abs(src[ni + 2] - cB)) / 3;
+          if (diff < pass.threshold) {
+            sumR += src[ni]; sumG += src[ni + 1]; sumB += src[ni + 2];
+            count++;
+          }
+        }
+      }
+      if (count > 0) {
+        d[i]     = Math.round(cR + (sumR / count - cR) * intensity);
+        d[i + 1] = Math.round(cG + (sumG / count - cG) * intensity);
+        d[i + 2] = Math.round(cB + (sumB / count - cB) * intensity);
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+}
+
+// Soft glow: blend with blurred copy for luminous diffusion
+function applySoftGlow(ctx, w, h, amount = 0.4) {
+  const orig = ctx.getImageData(0, 0, w, h);
+  const glow = ctx.getImageData(0, 0, w, h);
+  const d = glow.data;
+  const src = new Uint8ClampedArray(d);
+  const r = 8;
+
+  for (let i = 0; i < d.length; i += 4) {
+    let sumR = 0, sumG = 0, sumB = 0, count = 0;
+    const idx = i / 4;
+    const x = idx % w, y = (idx / w) | 0;
+    for (let dy = -r; dy <= r; dy++) {
+      const ny = y + dy;
+      if (ny < 0 || ny >= h) continue;
+      for (let dx = -r; dx <= r; dx++) {
+        const nx = x + dx;
+        if (nx < 0 || nx >= w) continue;
+        const ni = (ny * w + nx) * 4;
+        sumR += src[ni]; sumG += src[ni + 1]; sumB += src[ni + 2];
+        count++;
+      }
+    }
+    d[i]     = Math.round(orig.data[i]     + (sumR / count - orig.data[i])     * amount);
+    d[i + 1] = Math.round(orig.data[i + 1] + (sumG / count - orig.data[i + 1]) * amount);
+    d[i + 2] = Math.round(orig.data[i + 2] + (sumB / count - orig.data[i + 2]) * amount);
+  }
+  ctx.putImageData(glow, 0, 0);
+}
+
+// Lift shadows and brighten midtones
+function liftShadowsKorean(ctx, w, h, shadowLift = 50, midtoneBoost = 1.15) {
+  const img = ctx.getImageData(0, 0, w, h);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    for (let c = 0; c < 3; c++) {
+      let v = d[i + c];
+      v = Math.min(255, v + shadowLift);
+      if (v >= 50 && v <= 200) v = Math.min(255, v * midtoneBoost);
+      d[i + c] = Math.round(v);
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// Highlight-only bloom: glow restricted to bright areas (dewy/glass skin)
+function applyHighlightBloom(ctx, w, h, threshold = 180, amount = 0.5) {
+  const orig = ctx.getImageData(0, 0, w, h);
+  const d = orig.data;
+  const src = new Uint8ClampedArray(d);
+  const r = 6;
+
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = (src[i] * 0.299 + src[i + 1] * 0.587 + src[i + 2] * 0.114);
+    if (lum < threshold) continue;
+
+    let sumR = 0, sumG = 0, sumB = 0, count = 0;
+    const idx = i / 4;
+    const x = idx % w, y = (idx / w) | 0;
+    for (let dy = -r; dy <= r; dy++) {
+      const ny = y + dy;
+      if (ny < 0 || ny >= h) continue;
+      for (let dx = -r; dx <= r; dx++) {
+        const nx = x + dx;
+        if (nx < 0 || nx >= w) continue;
+        const ni = (ny * w + nx) * 4;
+        sumR += src[ni]; sumG += src[ni + 1]; sumB += src[ni + 2];
+        count++;
+      }
+    }
+    const blend = ((lum - threshold) / (255 - threshold)) * amount;
+    d[i]     = Math.min(255, Math.round(d[i]     + (sumR / count - d[i])     * blend));
+    d[i + 1] = Math.min(255, Math.round(d[i + 1] + (sumG / count - d[i + 1]) * blend));
+    d[i + 2] = Math.min(255, Math.round(d[i + 2] + (sumB / count - d[i + 2]) * blend));
+  }
+  ctx.putImageData(orig, 0, 0);
+}
+
+// Cool-toned color grade: blue/violet shift in shadows for fair/transparent skin
+function applyCoolGrade(ctx, w, h, strength = 0.15) {
+  const img = ctx.getImageData(0, 0, w, h);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
+    const shadowFactor = Math.max(0, 1 - lum / 150) * strength;
+    d[i]     = Math.max(0, Math.round(d[i]     - shadowFactor * 15));     // reduce red
+    d[i + 1] = Math.max(0, Math.round(d[i + 1] - shadowFactor * 5));      // slight green reduce
+    d[i + 2] = Math.min(255, Math.round(d[i + 2] + shadowFactor * 20));   // add blue
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// Negative clarity: reduce local contrast to fade wrinkles
+function applyNegativeClarity(ctx, w, h, strength = 0.4) {
+  const orig = ctx.getImageData(0, 0, w, h);
+  const d = orig.data;
+  const src = new Uint8ClampedArray(d);
+  const r = 10;
+
+  for (let i = 0; i < d.length; i += 4) {
+    let sumR = 0, sumG = 0, sumB = 0, count = 0;
+    const idx = i / 4;
+    const x = idx % w, y = (idx / w) | 0;
+    for (let dy = -r; dy <= r; dy += 2) {
+      const ny = y + dy;
+      if (ny < 0 || ny >= h) continue;
+      for (let dx = -r; dx <= r; dx += 2) {
+        const nx = x + dx;
+        if (nx < 0 || nx >= w) continue;
+        const ni = (ny * w + nx) * 4;
+        sumR += src[ni]; sumG += src[ni + 1]; sumB += src[ni + 2];
+        count++;
+      }
+    }
+    // Blend toward local average — reduces local contrast (wrinkles fade)
+    d[i]     = Math.round(d[i]     + (sumR / count - d[i])     * strength);
+    d[i + 1] = Math.round(d[i + 1] + (sumG / count - d[i + 1]) * strength);
+    d[i + 2] = Math.round(d[i + 2] + (sumB / count - d[i + 2]) * strength);
+  }
+  ctx.putImageData(orig, 0, 0);
+}
+
+// De-saturate shadows: prevents muddy look, keeps face clean
+function desatShadows(ctx, w, h, threshold = 100, strength = 0.5) {
+  const img = ctx.getImageData(0, 0, w, h);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
+    if (lum >= threshold) continue;
+    const factor = (1 - lum / threshold) * strength;
+    d[i]     = Math.round(d[i]     + (lum - d[i])     * factor);
+    d[i + 1] = Math.round(d[i + 1] + (lum - d[i + 1]) * factor);
+    d[i + 2] = Math.round(d[i + 2] + (lum - d[i + 2]) * factor);
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
 // Detect ctx.filter support (Safari doesn't have it)
 const _testCanvas = typeof document !== 'undefined' ? document.createElement('canvas').getContext('2d') : null;
 const SUPPORTS_CTX_FILTER = _testCanvas && 'filter' in _testCanvas && (() => {
@@ -133,13 +409,45 @@ function applyPixelFilters(ctx, w, h, cssFilter) {
 }
 
 const FILTERS = [
-  { name: 'Pure White', css: 'brightness(1.1) contrast(0.9) saturate(1.1) blur(1.5px)' },
-  { name: 'Peach Cream', css: 'brightness(1.05) sepia(0.2) saturate(1.3) contrast(0.95) blur(1.5px)' },
+  // 醒圖-style 磨皮 filters (no global blur, skin-only processing)
+  {
+    name: 'Natural',
+    css: 'brightness(1.08) contrast(0.95) saturate(1.05)',
+    post: (ctx, w, h) => {
+      applyMopi(ctx, w, h, 8, 0.3);
+      liftBlacks(ctx, w, h, 20);
+    },
+  },
+  {
+    name: 'Dewy',
+    css: 'brightness(1.12) contrast(0.92) saturate(0.98)',
+    post: (ctx, w, h) => {
+      applyMopi(ctx, w, h, 10, 0.4);
+      applyHighlightBloom(ctx, w, h, 200, 0.25);
+      desatShadows(ctx, w, h, 90, 0.2);
+      applyCoolGrade(ctx, w, h, 0.06);
+    },
+  },
+  // Glass skin / Chok-Chok filters
+  {
+    name: 'Porcelain',
+    css: 'brightness(1.2) contrast(0.9) saturate(0.95) blur(1.2px)',
+    post: (ctx, w, h) => {
+      desatShadows(ctx, w, h, 90, 0.25);
+      applyCoolGrade(ctx, w, h, 0.08);
+    },
+  },
+  {
+    name: 'Chok-Chok',
+    css: 'brightness(1.15) contrast(0.85) saturate(0.9) blur(1.5px)',
+    post: (ctx, w, h) => {
+      liftShadowsKorean(ctx, w, h, 25, 1.05);
+      desatShadows(ctx, w, h, 100, 0.3);
+      applyCoolGrade(ctx, w, h, 0.1);
+    },
+  },
   { name: 'Tokyo Film', css: 'hue-rotate(-5deg) saturate(1.2) brightness(1.05) contrast(0.9) blur(1.5px)' },
-  { name: 'High-Key Gloss', css: 'brightness(1.2) contrast(1.1) saturate(1.2) blur(1.5px)' },
-  { name: 'Minimalist Matte', css: 'saturate(0.7) contrast(0.85) brightness(1.15) blur(1.5px)' },
   { name: 'Sakura Glow', css: 'hue-rotate(-15deg) saturate(1.4) brightness(1.1) contrast(0.9) blur(1.5px)' },
-  { name: 'Vintage Purikura', css: 'contrast(1.2) saturate(1.5) brightness(1.1) blur(1.5px)' },
   { name: 'Morning Light', css: 'blur(1.5px) brightness(1.1) contrast(0.9) saturate(1.1)' },
   // 90s analog photobooth filters
   {
@@ -172,17 +480,7 @@ const FILTERS = [
     css: 'grayscale(1) contrast(0.85) brightness(1.1) blur(1.8px)',
     post: (ctx, w, h) => { liftBlacks(ctx, w, h, 40); addGrain(ctx, w, h, 55); },
   },
-  {
-    name: 'Expired Film',
-    css: 'sepia(0.1) contrast(0.7) saturate(0.5) brightness(1.15) hue-rotate(15deg) blur(2.5px)',
-    post: (ctx, w, h) => { liftBlacks(ctx, w, h, 65); warmTint(ctx, w, h, 180, 220, 200, 0.15); addGrain(ctx, w, h, 60); },
-  },
   // 1970s B&W photobooth
-  {
-    name: '70s Booth',
-    css: 'grayscale(1) contrast(1.6) brightness(1.1) blur(1.5px)',
-    post: (ctx, w, h) => { applyLevels(ctx, w, h, 30, 220); addGrain(ctx, w, h, 65); addVignette(ctx, w, h, 0.5); },
-  },
   {
     name: '70s Harsh',
     css: 'grayscale(1) contrast(1.8) brightness(1.05) blur(1.2px)',
@@ -304,8 +602,8 @@ export default function Photobooth() {
 
   const startCountdown = useCallback(() => {
     if (!stream || countdown !== null) return;
-    setCountdown(3);
-    let count = 3;
+    setCountdown(1);
+    let count = 1;
     const timer = setInterval(() => {
       count--;
       if (count > 0) {
@@ -390,7 +688,8 @@ export default function Photobooth() {
               <button
                 key={f.name}
                 className={`btn btn-filter ${i === filter ? 'active' : ''}`}
-                onClick={() => setFilter(i)}
+                onClick={() => photos.length === 0 && setFilter(i)}
+                disabled={photos.length > 0}
               >
                 {f.name}
               </button>
