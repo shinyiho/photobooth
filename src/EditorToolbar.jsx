@@ -46,44 +46,30 @@ export default function EditorToolbar({
   penType, onPenTypeChange,
   children,
 }) {
-  const categories = stickerCategories || [{ id: 'classic', label: 'CLASSIC', type: 'emoji', items: DEFAULT_STICKERS }];
+  const emojiCat = { id: 'classic', label: 'CLASSIC', type: 'emoji', items: DEFAULT_STICKERS };
+  const categories = stickerCategories ? [...stickerCategories, emojiCat] : [emojiCat];
   const currentCat = categories.find(c => c.id === activeCategory) || categories[0];
   return (
     <div className="editor-toolbar">
       {children}
 
-      <div className="toolbar-divider" />
-
-      <div className="toolbar-section toolbar-section-bg">
-        <span className="toolbar-label">BG</span>
-        <div className="bg-colors">
-          {BG_COLORS.map(c => (
-            <button
-              key={c.value}
-              className={`color-swatch ${bgColor === c.value ? 'active' : ''}`}
-              style={{ background: c.value }}
-              onClick={() => onBgChange(c.value)}
-              title={c.name}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="toolbar-divider" />
-
       <div className="toolbar-tabs">
         <button
           className={`toolbar-tab ${mode === 'sticker' ? 'active' : ''}`}
           onClick={() => onModeChange('sticker')}
-        >STICKER</button>
+        >⭐</button>
         <button
           className={`toolbar-tab ${mode === 'stamp' ? 'active' : ''}`}
           onClick={() => onModeChange('stamp')}
-        >STAMP</button>
+        >🅰️</button>
         <button
           className={`toolbar-tab ${mode === 'draw' ? 'active' : ''}`}
           onClick={() => onModeChange('draw')}
-        >DRAW</button>
+        >✏️</button>
+        <button
+          className={`toolbar-tab ${mode === 'bg' ? 'active' : ''}`}
+          onClick={() => onModeChange('bg')}
+        >🎨</button>
       </div>
 
       <div className="toolbar-tab-content">
@@ -163,7 +149,6 @@ export default function EditorToolbar({
 
       {mode === 'draw' && (
         <div className="toolbar-section">
-
           <div className="draw-options">
             <div className="mode-toggle">
               {['marker', 'neon', 'airbrush', 'glitter'].map(p => (
@@ -176,25 +161,43 @@ export default function EditorToolbar({
                 </button>
               ))}
             </div>
-            <div className="draw-colors">
-              {DRAW_COLORS.map(c => (
-                <button
-                  key={c}
-                  className={`color-swatch ${drawColor === c ? 'active' : ''}`}
-                  style={{ background: c }}
-                  onClick={() => onDrawColorChange(c)}
+            <div className="draw-colors-size">
+              <div className="draw-colors">
+                {DRAW_COLORS.map(c => (
+                  <button
+                    key={c}
+                    className={`color-swatch ${drawColor === c ? 'active' : ''}`}
+                    style={{ background: c }}
+                    onClick={() => onDrawColorChange(c)}
+                  />
+                ))}
+              </div>
+              <div className="draw-size">
+                <input
+                  type="range"
+                  min="4"
+                  max="40"
+                  value={drawSize}
+                  onChange={e => onDrawSizeChange(Number(e.target.value))}
                 />
-              ))}
+              </div>
             </div>
-            <div className="draw-size">
-              <input
-                type="range"
-                min="4"
-                max="40"
-                value={drawSize}
-                onChange={e => onDrawSizeChange(Number(e.target.value))}
+          </div>
+        </div>
+      )}
+
+      {mode === 'bg' && (
+        <div className="toolbar-section">
+          <div className="bg-colors">
+            {BG_COLORS.map(c => (
+              <button
+                key={c.value}
+                className={`color-swatch ${bgColor === c.value ? 'active' : ''}`}
+                style={{ background: c.value }}
+                onClick={() => onBgChange(c.value)}
+                title={c.name}
               />
-            </div>
+            ))}
           </div>
         </div>
       )}
