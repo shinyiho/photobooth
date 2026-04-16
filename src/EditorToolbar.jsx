@@ -151,13 +151,13 @@ export default function EditorToolbar({
         <div className="toolbar-section">
           <div className="draw-options">
             <div className="mode-toggle">
-              {['marker', 'neon', 'airbrush', 'glitter'].map(p => (
+              {[['marker','MARKER'], ['neon','NEON'], ['airbrush','BRUSH'], ['glitter','GLITTER']].map(([p, label]) => (
                 <button
                   key={p}
                   className={`btn btn-filter ${penType === p ? 'active' : ''}`}
                   onClick={() => onPenTypeChange(p)}
                 >
-                  {p.toUpperCase()}
+                  {label}
                 </button>
               ))}
             </div>

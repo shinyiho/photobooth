@@ -602,8 +602,8 @@ export default function Photobooth() {
 
   const startCountdown = useCallback(() => {
     if (!stream || countdown !== null) return;
-    setCountdown(1);
-    let count = 1;
+    setCountdown(3);
+    let count = 3;
     const timer = setInterval(() => {
       count--;
       if (count > 0) {
