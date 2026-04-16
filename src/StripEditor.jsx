@@ -20,9 +20,29 @@ export default function StripEditor({ photos, onClose, onDone }) {
   const dragSnapshotSaved = useRef(false);
   const [mode, setMode] = useState('sticker'); // 'sticker' | 'stamp' | 'draw'
   const [stickerCategories, setStickerCategories] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('acc');
-  const [selectedSticker, setSelectedSticker] = useState({ type: 'emoji', emoji: DEFAULT_STICKERS[0] });
-  const [selectedStamp, setSelectedStamp] = useState(0);
+  const [activeCategory, setActiveCategory] = useState('heart');
+  const [selectedSticker, setSelectedSticker] = useState(null);
+  const [selectedStamp, setSelectedStamp] = useState(null);
+
+  // Auto-select 5th heart once sticker categories load
+  useEffect(() => {
+    if (stickerCategories && !selectedSticker) {
+      const heart = stickerCategories.find(c => c.id === 'heart');
+      if (heart && heart.items[4]) {
+        setSelectedSticker({ type: 'image', src: import.meta.env.BASE_URL + 'stickers/' + heart.items[4] });
+      }
+    }
+  }, [stickerCategories]);
+
+  // Auto-select first sticker/stamp when switching to those modes
+  useEffect(() => {
+    if (mode === 'sticker' && !selectedSticker) {
+      setSelectedSticker({ type: 'image', src: import.meta.env.BASE_URL + 'stickers/heart/Screenshot 2026-04-15 at 14.23 Background Removed.31.png' });
+    }
+    if (mode === 'stamp' && selectedStamp === null) {
+      setSelectedStamp(0);
+    }
+  }, [mode]);
   const [stampColor, setStampColor] = useState(STAMP_COLORS[0]);
   const [drawColor, setDrawColor] = useState(DRAW_COLORS[0]);
   const [drawSize, setDrawSize] = useState(16);
@@ -416,6 +436,8 @@ export default function StripEditor({ photos, onClose, onDone }) {
 
   // Sticker/stamp placement via click
   const handleCanvasClick = useCallback((e) => {
+    if (mode === 'sticker' && !selectedSticker) return;
+    if (mode === 'stamp' && selectedStamp === null) return;
     saveSnapshot();
     const id = Date.now();
     const pos = getPos(e);
@@ -471,6 +493,50 @@ export default function StripEditor({ photos, onClose, onDone }) {
     setStickers(prev => prev.filter(s => s.id !== id));
   }, [saveSnapshot]);
 
+  // Pinch-to-resize and two-finger-rotate gestures (mobile only)
+  // Tracked on the canvas-wrap so fingers don't need to be on the tiny sticker element
+  const gestureRef = useRef(null);
+
+  const handleGestureMove = useCallback((e) => {
+    if (mode === 'draw') return;
+    if (e.touches && e.touches.length >= 2 && selectedId !== null) {
+      e.preventDefault();
+      const t0 = e.touches[0];
+      const t1 = e.touches[1];
+      const dx = t1.clientX - t0.clientX;
+      const dy = t1.clientY - t0.clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+      if (!gestureRef.current) {
+        // First two-finger frame: save snapshot and record initial state
+        isDraggingSticker.current = false;
+        saveSnapshot();
+        const s = stickersRef.current.find(s => s.id === selectedId);
+        gestureRef.current = {
+          initDist: dist,
+          initAngle: angle,
+          initSize: s?.size || 40,
+          initRotation: s?.rotation || 0,
+        };
+        return;
+      }
+
+      const g = gestureRef.current;
+      const scale = dist / g.initDist;
+      const newSize = Math.max(16, Math.min(200, g.initSize * scale));
+      const newRotation = g.initRotation + (angle - g.initAngle);
+      const id = selectedId;
+      setStickers(prev => prev.map(s =>
+        s.id === id ? { ...s, size: Math.round(newSize), rotation: Math.round(newRotation) } : s
+      ));
+    }
+  }, [mode, selectedId, saveSnapshot]);
+
+  const handleGestureEnd = useCallback(() => {
+    gestureRef.current = null;
+  }, []);
+
 
   // Export final image
   const download = useCallback(async () => {
@@ -481,9 +547,6 @@ export default function StripEditor({ photos, onClose, onDone }) {
 
     // Draw base
     ctx.drawImage(baseCanvasRef.current, 0, 0);
-
-    // Draw freehand layer
-    ctx.drawImage(drawCanvasRef.current, 0, 0);
 
     // Pre-load image stickers
     const imageCache = {};
@@ -511,7 +574,12 @@ export default function StripEditor({ photos, onClose, onDone }) {
         ctx.shadowBlur = 6;
         ctx.fillText(s.text, 0, 0);
       } else if (s.src && imageCache[s.src]) {
-        ctx.drawImage(imageCache[s.src], -s.size / 2, -s.size / 2, s.size, s.size);
+        const img = imageCache[s.src];
+        const aspect = img.naturalWidth / img.naturalHeight;
+        let w = s.size, h = s.size;
+        if (aspect > 1) h = s.size / aspect;
+        else w = s.size * aspect;
+        ctx.drawImage(img, -w / 2, -h / 2, w, h);
       } else if (s.emoji) {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -520,6 +588,9 @@ export default function StripEditor({ photos, onClose, onDone }) {
       }
       ctx.restore();
     });
+
+    // Draw freehand layer on top of stickers
+    ctx.drawImage(drawCanvasRef.current, 0, 0);
 
     const dataUrl = exportCanvas.toDataURL('image/png');
     const link = document.createElement('a');
@@ -574,15 +645,26 @@ export default function StripEditor({ photos, onClose, onDone }) {
         <div
           className={`editor-canvas-wrap ${mode === 'draw' ? 'draw-active' : ''}`}
           ref={containerRef}
-          onMouseDown={mode === 'draw' ? startDraw : ((mode === 'sticker' || mode === 'stamp') ? handleCanvasClick : undefined)}
+          onMouseDown={mode === 'draw' ? startDraw : undefined}
           onMouseMove={mode === 'draw' ? draw : dragSelected}
           onMouseUp={mode === 'draw' ? stopDraw : stopDragSelected}
           onMouseLeave={mode === 'draw' ? stopDraw : stopDragSelected}
-          onTouchStart={mode === 'draw' ? startDraw : ((mode === 'sticker' || mode === 'stamp') ? handleCanvasClick : undefined)}
-          onTouchMove={mode === 'draw' ? draw : dragSelected}
-          onTouchEnd={mode === 'draw' ? stopDraw : stopDragSelected}
-          onClick={() => { if (mode === 'draw') setSelectedId(null); }}
+          onTouchStart={mode === 'draw' ? startDraw : undefined}
+          onTouchMove={(e) => {
+            handleGestureMove(e);
+            if (!gestureRef.current) {
+              if (mode === 'draw') draw(e);
+              else dragSelected(e);
+            }
+          }}
+          onTouchEnd={(e) => {
+            handleGestureEnd();
+            if (mode === 'draw') stopDraw();
+            else stopDragSelected();
+          }}
+          onClick={(mode === 'sticker' || mode === 'stamp') ? handleCanvasClick : () => { if (mode === 'draw') setSelectedId(null); }}
         >
+          <div className="editor-canvas-inner">
           <canvas ref={baseCanvasRef} className="editor-canvas" />
           <canvas
             ref={drawCanvasRef}
@@ -593,7 +675,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
             className="editor-canvas editor-draw-layer"
           />
           {/* Render stickers and stamps as positioned overlays */}
-          {stickers.map(s => {
+          {stickers.map((s, index) => {
             const canvas = baseCanvasRef.current;
             if (!canvas) return null;
             const rect = canvas.getBoundingClientRect();
@@ -605,7 +687,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
             return (
               <div
                 key={s.id}
-                className={`placed-sticker ${isSelected ? 'selected' : ''} ${isStamp ? 'placed-stamp' : ''}`}
+                className={`placed-sticker ${isSelected && mode !== 'draw' ? 'selected' : ''} ${isStamp ? 'placed-stamp' : ''}`}
                 style={{
                   left: s.x * scaleX,
                   top: s.y * scaleY,
@@ -614,6 +696,8 @@ export default function StripEditor({ photos, onClose, onDone }) {
                     : { fontSize: s.size * scaleX }),
                   color: isStamp ? s.color : undefined,
                   transform: `translate(-50%, -50%) rotate(${s.rotation || 0}deg)`,
+                  zIndex: isSelected ? stickers.length + 1 : index + 1,
+                  pointerEvents: mode === 'draw' ? 'none' : undefined,
                 }}
                 onMouseDown={e => startDragSelected(e, s.id)}
                 onTouchStart={e => startDragSelected(e, s.id)}
@@ -626,6 +710,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
               </div>
             );
           })}
+          </div>
         </div>
 
         <div className={`editor-timer-block ${timerWarning ? 'warning' : ''}`}>
@@ -634,6 +719,7 @@ export default function StripEditor({ photos, onClose, onDone }) {
             {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
           </span>
         </div>
+
       </div>
     </div>
   );

@@ -4,16 +4,16 @@ export default function PreviewActions({ onUndo, onRedo, canUndo, canRedo, onDow
   return (
     <div className="preview-actions">
       <div className="preview-actions-row">
-        <button className="btn btn-filter" onClick={onUndo} disabled={!canUndo}>UNDO</button>
-        <button className="btn btn-filter" onClick={onRedo} disabled={!canRedo}>REDO</button>
+        <button className="btn btn-filter preview-actions-undo" onClick={onUndo} disabled={!canUndo}>UNDO</button>
+        <button className="btn btn-filter preview-actions-undo" onClick={onRedo} disabled={!canRedo}>REDO</button>
         <button className="btn btn-download" onClick={onDownload}>PRINT</button>
       </div>
       {showEdit && (
-        <div className="preview-actions-row">
-          <button className="btn btn-filter" onClick={() => selectedId && onAdjustSticker(selectedId, 'size', sizeStep)} disabled={!selectedId}>SIZE +</button>
-          <button className="btn btn-filter" onClick={() => selectedId && onAdjustSticker(selectedId, 'size', -sizeStep)} disabled={!selectedId}>SIZE -</button>
-          <button className="btn btn-filter" onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', -15)} disabled={!selectedId}>&#8630; ROT</button>
-          <button className="btn btn-filter" onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', 15)} disabled={!selectedId}>ROT &#8631;</button>
+        <div className="preview-actions-row preview-actions-edit">
+          <button className="btn btn-filter btn-icon" onClick={() => selectedId && onAdjustSticker(selectedId, 'size', sizeStep)} disabled={!selectedId}>+</button>
+          <button className="btn btn-filter btn-icon" style={{ paddingBottom: '4px' }} onClick={() => selectedId && onAdjustSticker(selectedId, 'size', -sizeStep)} disabled={!selectedId}>−</button>
+          <button className="btn btn-filter btn-icon" onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', -15)} disabled={!selectedId}>&#8630;</button>
+          <button className="btn btn-filter btn-icon" onClick={() => selectedId && onAdjustSticker(selectedId, 'rotation', 15)} disabled={!selectedId}>&#8631;</button>
         </div>
       )}
     </div>
