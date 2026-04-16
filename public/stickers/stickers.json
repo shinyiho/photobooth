@@ -138,6 +138,31 @@
       ]
     },
     {
+      "id": "mario",
+      "label": "MARIO",
+      "type": "image",
+      "items": [
+        "mario/cherries.png",
+        "mario/cloud Background Removed.png",
+        "mario/coin Background Removed.png",
+        "mario/egg Background Removed.png",
+        "mario/emerald.png",
+        "mario/fire-flower Background Removed.png",
+        "mario/fire-flower.png",
+        "mario/goomba Background Removed.png",
+        "mario/mario.png",
+        "mario/mushroom Background Removed.png",
+        "mario/mushroom.png",
+        "mario/pipe Background Removed.png",
+        "mario/question-block Background Removed.png",
+        "mario/question-block.png",
+        "mario/rainbow-star.png",
+        "mario/star Background Removed.png",
+        "mario/star.png",
+        "mario/yoshi-egg.png"
+      ]
+    },
+    {
       "id": "others",
       "label": "OTHERS",
       "type": "image",

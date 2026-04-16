@@ -56,6 +56,7 @@ export default function PhotoBoard({ items: propItems, myStripId, onUpdateItem, 
 
   const onDrag = useCallback((e) => {
     if (dragging === null) return;
+    if (e.cancelable) e.preventDefault();
     const pos = getPos(e);
     setItems(prev => prev.map(i =>
       i.id === dragging ? { ...i, x: pos.x - dragOffset.current.x, y: pos.y - dragOffset.current.y } : i
@@ -122,6 +123,7 @@ export default function PhotoBoard({ items: propItems, myStripId, onUpdateItem, 
                 transform: `rotate(${item.rotation}deg)`,
                 zIndex: dragging === item.id ? items.length + 10 : index + 1,
                 cursor: item.id === myStripId ? (dragging === item.id ? 'grabbing' : 'grab') : 'default',
+                touchAction: item.id === myStripId ? 'none' : 'pan-y',
               }}
               onMouseDown={e => startDrag(e, item.id)}
               onTouchStart={e => { e.stopPropagation(); startDrag(e, item.id); }}

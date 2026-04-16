@@ -1079,7 +1079,7 @@
   width: 100vw;
   height: 300vw;
   overflow: hidden;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 .board-locker {

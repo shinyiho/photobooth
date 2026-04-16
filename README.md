@@ -10,12 +10,6 @@ A retro-styled photobooth web app inspired by purikura and 80s arcade aesthetics
 ### Shared Board
 ![Shared board](public/screenshots/board.png)
 
-### Mobile
-<p float="left">
-  <img src="public/screenshots/mobile-camera.png" width="45%" />
-  <img src="public/screenshots/mobile-board.png" width="45%" />
-</p>
-
 ## Features
 
 - **18+ film filters** — Pure White, Tokyo Film, 90s Booth, Grainy B&W, 70s Harsh, and more

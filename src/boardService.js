@@ -36,12 +36,17 @@ function compressImage(dataUrl, quality = 0.7) {
 // localId is a stable key that survives the pending → Firestore ID swap.
 export function makePendingItem(src) {
   const localId = `local-${Date.now()}`;
+  // Place at viewport center: 50vw horizontally, 50vh vertically (in virtual board coords)
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 400;
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
+  const centerX = BOARD_W / 2;
+  const centerY = (vh / vw) * BOARD_W / 2;
   return {
     id: localId,
     localId,
     src,
-    x: 100 + Math.random() * (BOARD_W - 300),
-    y: 50 + Math.random() * (BOARD_H - 500),
+    x: centerX,
+    y: centerY,
     rotation: (Math.random() - 0.5) * 15,
     tape: TAPE_COLORS[Math.floor(Math.random() * TAPE_COLORS.length)],
   };
